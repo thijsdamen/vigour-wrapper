@@ -123,45 +123,45 @@
 		* @function
 		* @param {object} parameters An object with the required initialization parameters for the service.
 		*/
-	Store.requestInitialization = function(parameters);
+	Store.requestInit = function(parameters);
 
 	/**
 		* Starts the Store Service. 
-		* This will make the system to initialize the Store Service. Store callbacks will probably start to be received after calling this method so event handlers will have to be set before calling this method.
+		* This will make the system initialize the Store Service. Store callbacks will probably start to be received after calling this method so event handlers will have to be set before calling this method.
 		* @function
 		*/ 
 	Store.start = function();
 
 	/**
-		* This method allows you to check if the  Store service is available in this platform.
+		* This method allows you to check if the Store service is available in this platform.
 		* Not all iOS and Android devices will have the Store service available so availability should be checked before doing anything else.
 		* @function
 		* @return {boolean} True if the service is available and false otherwise.
 		*/ 
-	Store.canPurchase = function();
+	Store.isAvailable = function();
 
 	/**
 		* Fetches the products' information from the Store. 
-		* The request is monitored using the {@link Store.onProductsFetchStarted}, {@link Store.onProductsFetchCompleted} and {@link Store.onProductsFetchFailed} event handlers.
+		* The request is monitored using the {@link productsFetchStarted}, {@link productsFetchCompleted} and {@link productsFetchFailed} event handlers.
 		* @function
 		* @param {array} productIds An array with the ids of the products to retrieve information for.
-		* @see Store.onProductsFetchStarted
-		* @see Store.onProductsFetchCompleted
-		* @see Store.onProductsFetchFailed
+		* @see productsFetchStarted
+		* @see productsFetchCompleted
+		* @see productsFetchFailed
 		*/ 
-	Store.fetchProductsFromStore = function(productIds);
+	Store.fetchProducts = function(productIds);
 
 	/**
 		* Finish a purchase transaction and removes the transaction from the transaction queue. 
-		* This method must be called after a purchase finishes successfully and the  {@link Store.onProductPurchaseCompleted} callback has been received. 
+		* This method must be called after a purchase finishes successfully and the  {@link productPurchaseCompleted} callback has been received. 
 		* If the purchase includes some asset to download from an external server this method must be called after the asset has been successfully downloaded. 
-		* If you do not finish the transaction because the asset has not been correctly downloaded the {@link Store.onProductPurchaseStarted} method will be called again later on.
+		* If you do not finish the transaction because the asset has not been correctly downloaded the {@link productPurchaseStarted} method will be called again later on.
 		* @function
 		* @param {string} transactionId The transactionId of the purchase to finish.
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
 		*/ 
-	Store.finishPurchase = function(transactionId)
+	Store.endPurchase = function(transactionId)
 
 	/**
 		* Consumes a purchase. This allows that product to be purchasable again. 
@@ -173,34 +173,34 @@
 
 	/**
 		* Request a product purchase given it's product id. 
-		* The request is monitored using the {@link Store.onProductPurchaseStarted}, {@link onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers.
+		* The request is monitored using the {@link productPurchaseStarted}, {@link onProductPurchaseCompleted} and {@link productPurchaseFailed} event handlers.
 		* @function
 		* @param {string} productId The id of the product to be purchased.
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
 		*/ 
 	Store.purchaseProduct = function(productId)
 
 	/**
 		* Stop automatic renewall of a purchase for given product id. Only works for products which are of product type {@link Store.ProductType.AUTO_RENEWABLE_SUBSCRIPTION}.
-		* The request is monitored using the {@link Store.onCancelAutomaticPurchaseRenewallStarted}, {@link onCancelAutomaticPurchaseRenewallCompleted} and {@link Store.onCancelAutomaticPurchaseRenewallFailed} event handlers.
+		* The request is monitored using the {@link stopRenewalStarted}, {@link onStopRenewalCompleted} and {@link stopRenewalFailed} event handlers.
 		* @function
 		* @param {string} productId The id of the product for which automatic purchase renewall should be stopped.
-		* @see Store.onCancelAutomaticPurchaseRenewallStarted
-		* @see Store.onCancelAutomaticPurchaseRenewallCompleted
-		* @see Store.onCancelAutomaticPurchaseRenewallFailed
+		* @see stopRenewalStarted
+		* @see stopRenewalCompleted
+		* @see stopRenewalFailed
 		*/ 
-	Store.stopRenewall = function (productId)
+	Store.stopRenewal = function (productId)
 
 	/**
 		* Request a product purchase given it's product id showing a modal progress dialog. 
-		* The request is monitored using the {@link Store.onProductPurchaseStarted}, {@link onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers.
+		* The request is monitored using the {@link productPurchaseStarted}, {@link onProductPurchaseCompleted} and {@link productPurchaseFailed} event handlers.
 		* @function
 		* @param {string} productId The id of the product to be purchased.
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
 		*/ 
 	Store.puchaseProductModal = function(productId)
 
@@ -214,105 +214,109 @@
 
 	/**
 		* Restores all the purchases from the platform's market.
-		* For each already purchased product {@link Store.onProductPurchaseStarted}, {@link Store.onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers are called again.
-		* The request can also be monitored using the {@link Store.onRestorePurchasesStarted}, {@link Store.onRestorePurchasesCompleted} and {@link Store.onRestorePurchasesFailed} event handlers.
+		* For each already purchased product {@link productPurchaseStarted}, {@link productPurchaseCompleted} and {@link productPurchaseFailed} event handlers are called again.
+		* The request can also be monitored using the {@link restorePurchasesStarted}, {@link restorePurchasesCompleted} and {@link restorePurchasesFailed} event handlers.
 		* @function
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
-		* @see Store.onRestorePurchasesStarted
-		* @see Store.onRestorePurchasesCompleted
-		* @see Store.onRestorePurchasesFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
+		* @see restorePurchasesStarted
+		* @see restorePurchasesCompleted
+		* @see restorePurchasesFailed
 		*/
 	Store.restorePurchases = function()
 
 	/**
 		* Restores all the purchases from the platform's market showing a modal progress dialog. 
-		* For each already purchased product {@link Store.onProductPurchaseStarted}, {@link Store.onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers are called again.
-		* The request can also be monitored using the {@link Store.onRestorePurchasesStarted}, {@link Store.onRestorePurchasesCompleted} and {@link Store.onRestorePurchasesFailed} event handlers.
+		* For each already purchased product {@link productPurchaseStarted}, {@link productPurchaseCompleted} and {@link productPurchaseFailed} event handlers are called again.
+		* The request can also be monitored using the {@link restorePurchasesStarted}, {@link restorePurchasesCompleted} and {@link restorePurchasesFailed} event handlers.
 		* @function
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
-		* @see Store.onRestorePurchasesStarted
-		* @see Store.onRestorePurchasesCompleted
-		* @see Store.onRestorePurchasesFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
+		* @see restorePurchasesStarted
+		* @see restorePurchasesCompleted
+		* @see restorePurchasesFailed
 		*/
 	Store.restorePurchasesModal = function()
 
 	/**
 		* (TESTING ONLY) Simulate a purchase cancel. 
 		* This method is not allowed in production services and will only work in Mocks. 
-		* The request is monitored using the {@link Store.onProductPurchaseStarted}, {@link Store.onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers.
+		* The request is monitored using the {@link productPurchaseStarted}, {@link productPurchaseCompleted} and {@link productPurchaseFailed} event handlers.
 		* @function
 		* @param {string} transactionId The transactionId of the purchase to be canceled.
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
 		*/
 	Store.cancelPurchase = function(transactionId)
 
 	/**
 		* (TESTING ONLY) Simulate a purchase refundment. 
 		* This method is not allowed in production services and will only work in Mocks. 
-		* The request is monitored using the {@link Store.onProductPurchaseStarted}, {@link Store.onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers.
+		* The request is monitored using the {@link productPurchaseStarted}, {@link productPurchaseCompleted} and {@link productPurchaseFailed} event handlers.
 		* @function
 		* @param {string} transactionId The transactionId of the purchase to be refunded.
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
 		*/
 	Store.refundPurchase = function(transactionId)
 
 	/**
 		* (TESTING ONLY) Simulate a purchase expiration. 
 		* This method is not allowed in production services and will only work in Mocks. 
-		* The request is monitored using the {@link Store.onProductPurchaseStarted}, {@link Store.onProductPurchaseCompleted} and {@link Store.onProductPurchaseFailed} event handlers.
+		* The request is monitored using the {@link productPurchaseStarted}, {@link productPurchaseCompleted} and {@link productPurchaseFailed} event handlers.
 		* @function
 		* @param {string} transactionId The transactionId of the purchase to be expired.
-		* @see Store.onProductPurchaseStarted
-		* @see Store.onProductPurchaseCompleted
-		* @see Store.onProductPurchaseFailed
+		* @see productPurchaseStarted
+		* @see productPurchaseCompleted
+		* @see productPurchaseFailed
 		*/
 	Store.expirePurchase = function(transactionId)
 
 	/**
-    * This {@link EventHandler} object allows listening to events called when the products fetch has started.
+		* Store should use the same event emitter we use in vigour-js (EventEmitter 3) to provide `Store.on`, `Store.off`, etc., allowing one to listen to the following events:
+		*/
+
+	/**
+    * This event is triggered when the products fetch has started.
     * The callback function receives no parameters.
     * @static
     * @event
     */
-	Store.onProductsFetchStarted
+	productsFetchStarted
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the products fetch has completed.
+    * This event is triggered when the products fetch has completed.
     * The callback function receives one parameter: an array of the valid products.
     * @static
     * @event
     * @param {array} validProducts An array of {@link Store.ProductInfo} objects representing all the valid fetched products.
     */
-	Store.onProductsFetchCompleted
+	productsFetchCompleted
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the products fetch has failed.
+    * This event is triggered when the products fetch has failed.
     * The callback function receives one parameter: an error message.
     * @static
     * @event
-    * @param {string} errorMessage The error message.
+    * @param {string} errMsg The error message.
     */
-	Store.onProductsFetchFailed
+	productsFetchFailed
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the purchase of a product starts.
+    * This event is triggered when the purchase of a product starts.
     * The callback function receives one parameter: the information of the purchased product {@see Store.ProductInfo}.
     * @static
 		* @event
     * @param {Store.ProductInfo} productInfo The information of the purchased product.
     */
-	Store.onProductPurchaseStarted
+	productPurchaseStarted
 
 	/**
-    * This {@link EventHandler} object allows listening to events called when a request for purchase verification has been received from the Store.
+    * This event is triggered when a request for purchase verification has been received from the Store.
     * The callback function receives two parameters:
     *		1) the productId of the purchased product
     *		2) a JSON object containing the data to be verified
@@ -322,110 +326,110 @@
     * @param {string} productId The product id of the product to be verified.
     * @param {string} data The string with the data to be verified.
     */
-	Store.onProductPurchaseVerificationRequestReceived
+	productPurchaseVerifReceived
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the purchase of a product succeeds.
+    * This event is triggered when the purchase of a product succeeds.
     * The callback function receives one parameter: the information of the purchase {@see Store.PurchaseInfo}.
     * @static
     * @event
     * @param {Store.PurchaseInfo} purchaseInfo The purchase info.
     */
-	Store.onProductPurchaseCompleted
+	productPurchaseCompleted
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the purchase of a product fails.
+    * This event is triggered when the purchase of a product fails.
     * The callback function receives two parameters:
     *		1) the product id
     *		2) an error message
     * @static
     * @event
     * @param {string} productId The product id.
-    * @param {string} errorMessage The error message.
+    * @param {string} errMsg The error message.
     */
-	Store.onProductPurchaseFailed
+	productPurchaseFailed
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the restore purchases operation has started.
+    * This event is triggered when the restore purchases operation has started.
     * The callback function receives no parameters.
     * @static
     * @event
     */
-	Store.onRestorePurchasesStarted
+	restorePurchasesStarted
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the restore purchases operation has completed.
+    * This event is triggered when the restore purchases operation has completed.
     * The callback function receives no parameters.
     * @static
     * @event
     */
-	Store.onRestorePurchasesCompleted
+	restorePurchasesCompleted
 
 	/**
-    * This {@link EventHandler} object allows listening to events called when the restore purchases operation has failed.
+    * This event is triggered when the restore purchases operation has failed.
     * The callback function receives one parameter: an error message.
     * @static
     * @event
-    * @param {string} errorMessage The error message.
+    * @param {string} errMsg The error message.
     */
-	Store.onRestorePurchasesFailed
+	restorePurchasesFailed
 
 	/**
-    * This {@link EventHandler} object allows listening to events called when the consume purchase operation has started.
+    * This event is triggered when the consume purchase operation has started.
     * The callback function receives one parameter: the transaction id of the purchase being consumed.
     * @static
     * @event
     * @param {string} transactionId The transaction id of the purchase being consumed.
     */
-	Store.onConsumePurchaseStarted
+	consumePurchaseStarted
 
   /**
-    * This {@link EventHandler} object allows listening to events called when the consume purchase operation has completed.
+    * This event is triggered when the consume purchase operation has completed.
     * The callback function receives one parameter: the transaction id of the purchase being consumed.
     * @static
     * @event
     * @param {string} transactionId The transaction id of the consumed purchase.
     */
-	Store.onConsumePurchaseCompleted
+	consumePurchaseCompleted
 
 	/**
-    * This {@link EventHandler} object allows listening to events called when the consume purchase operation has failed.
+    * This event is triggered when the consume purchase operation has failed.
     * The callback function receives two parametera:
     	1) the transaction id of the purchase which couln't be consumed
     	2) an error message
     * @static
     * @event
     * @param {string} transactionId The transaction id of the purchase that couldn't be consumed.
-    * @param {string} errorMessage The error message.
+    * @param {string} errMsg The error message.
     */
-	Store.onConsumePurchaseFailed
+	consumePurchaseFailed
 
 	/**
-		* This {@link EventHandler} object allows listening to event called when an automatic purchase renewall cancellation operation has started.
+		* This event is triggered when an automatic purchase renewall cancellation operation has started.
 		* The callback function receives one parameter: the product id of the product whose automatic purchase renewall is being canceled.
 		* @static
 		* @event
 		* @param {string} productId the product id of the product whose automatic purchase renewall is being canceled.
 		*/
-	Store.onCancelAutomaticPurchaseRenewallStarted
+	stopRenewalStarted
 
 	/**
-		* This {@link EventHandler} object allows listening to event called when an automatic purchase renewall cancellation operation has completed.
+		* This event is triggered when an automatic purchase renewall cancellation operation has completed.
 		* The callback function receives one parameter: the product id of the product whose automatic purchase renewall has been successfully canceled.
 		* @static
 		* @event
 		* @param {string} productId the product id of the product whose automatic purchase renewall has been successfully canceled.
 		*/	
-	Store.onCancelAutomaticPurchaseRenewallCompleted
+	stopRenewalCompleted
 
 	/**
-		* This {@link EventHandler} object allows listening to event called when an automatic purchase renewall cancellation operation has failed.
+		* This event is triggered when an automatic purchase renewall cancellation operation has failed.
 		* The callback function receives two parameters:
 		*		1) the product id of the product whose automatic purchase renewall cancellation has failed.
 		*		2) An error message
 		* @static
 		* @event
 		* @param {string} productId the product id of the product whose automatic purchase renewall cancellation has failed.
-		* @param {string} errorMessage the error message
+		* @param {string} errMsg the error message
 		*/	
-	Store.onCancelAutomaticPurchaseRenewallFailed
+	stopRenewalFailed
