@@ -111,8 +111,8 @@ Store.getType = function (callback);
 
 
 /**
-	* Initialize the service with service level initialization parameters. If no parameters are passed, sensible defaults should be used.
-	* @param {object} parameters An object with the required initialization parameters for the service.
+	* Initialize the service with service level initialization parameters.
+	* @param {object} parameters An object with the required initialization parameters for the service.  If `null` is passed, sensible defaults should be used.
 	* The callback function receives the following parameters:
 	*		err {object} An error object or `null` if the operation terminated successfully
 	*/
@@ -150,22 +150,12 @@ Store.fetch = function (productIds, callback)
 
 
 /**
-	* Consumes a purchased product. This allows that consumable product to be purchasable again. Only works with Consumable products.
-	* @param {string} transactionId The transaction Id of the purchase to consume.
-	* @param {string} productId The productId of the product to be consumed.
-	* The callback function receives the following parameters:
-	*		err {object} An error object or `null` if the operation terminated successfully
-	*/ 
-Store.consume = function (transactionId, productId, callback)
-
-
-/**
 	* Request a product purchase given it's product id. 
 	* This method triggers the {@link buy} event.
 	* @param {string} productId The id of the product to be purchased.
   * The callback function receives the following parameters:
 	*		err {object} An error object or `null` if the operation terminated successfully
-	*		info {Store.ProductInfo} The information of the purchased product.
+	*		info {Store.PurchaseInfo} The information of the purchase.
 	*/ 
 Store.buy = function (productId, callback)
 
@@ -176,9 +166,19 @@ Store.buy = function (productId, callback)
 	* @param {string} productId The id of the product to be purchased.
   * The callback function receives the following parameters:
 	*		err {object} An error object or `null` if the operation terminated successfully
-	*		info {Store.ProductInfo} The information of the purchased product.
+	*		info {Store.PurchaseInfo} The information of the purchase.
 	*/ 
 Store.buyModal = function (productId, callback)
+
+
+/**
+	* Consumes a purchased product. This allows that consumable product to be purchasable again. Only works with Consumable products.
+	* @param {string} transactionId The transaction Id of the purchase to consume.
+	* @param {string} productId The productId of the product to be consumed.
+	* The callback function receives the following parameters:
+	*		err {object} An error object or `null` if the operation terminated successfully
+	*/ 
+Store.consume = function (transactionId, productId, callback)
 
 
 /**
@@ -242,49 +242,57 @@ Store.refundPurchase = function (transactionId)
 Store.expirePurchase = function (transactionId)
 
 
-	// Store should use the same event emitter we use in vigour-js (EventEmitter 3) to provide `Store.on`, `Store.off`, etc., allowing one to listen to the following events:
+// Store should use the same event emitter we use in vigour-js (EventEmitter 3) to provide `Store.on`, `Store.off`, etc., allowing one to listen to the following events:
 
 
-	/**
-    * This event is triggered when the fetch method starts.
-		* The callback function is called without parameters.
-    */
-	Store.on('fetch', callback)
+/**
+  * This event is triggered when the fetch method starts.
+	* The callback function is called without parameters.
+  */
+Store.on('fetch', callback)
 
 
-  /**
-    * This event is triggered when the purchase of a product starts.
-    * The callback function receives the following parameters:
-		*		productId {string} The id of the purchased product.
-    */
-	Store.on('buy', callback)
+/**
+  * This event is triggered when the purchase of a product starts.
+  * The callback function receives the following parameters:
+	*		productId {string} The id of the purchased product.
+  */
+Store.on('buy', callback)
 
 
-  /**
-    * This event is triggered when the restore purchases operation has started.
-    * The callback function is called without parameters.
-    */
-	Store.on('restore', callback)
+/**
+  * This event is triggered when the restore purchases operation has started.
+  * The callback function is called without parameters.
+  */
+Store.on('restore', callback)
 
-	/**
-		* This event is triggered when the restore purchase operation restored a purchase.
-		* The callback function receives the following parameters:
-		* 	productId {string} The id of the product which was restored
-    */
-	Store.on('restored', callback)
-
-
-	/**
-    * This event is triggered when the consume purchase operation has started.
-    * The callback function receives the following parameters:
-    *		transactionId {string} the transaction id of the purchase being consumed.
-    */
-	Store.on('consume', callback)
+/**
+	* This event is triggered when the restore purchase operation restored a purchase.
+	* The callback function receives the following parameters:
+	* 	productId {string} The id of the product which was restored
+  */
+Store.on('restored', callback)
 
 
-	/**
-		* This event is triggered when automatic purchase renewall cancellation (unsubscription) starts.
-    * The callback function receives the following parameters:
-		*		productId {string} the product id of the product whose automatic purchase renewall is being canceled.
-		*/
-	Store.on('unsubscribe', callback)
+/**
+  * This event is triggered when the consume purchase operation has started.
+  * The callback function receives the following parameters:
+  *		transactionId {string} the transaction id of the purchase being consumed.
+  */
+Store.on('consume', callback)
+
+
+/**
+	* This event is triggered when automatic purchase renewall cancellation (unsubscription) starts.
+  * The callback function receives the following parameters:
+	*		productId {string} the product id of the product whose automatic purchase renewall is being canceled.
+	*/
+Store.on('unsubscribe', callback)
+
+/**
+	* This event is triggered when a store ask for a product purchase to be verified.
+	* The callback function receives the following parameters:
+	*		productId {string} the product id of the product whose purchase should be verified
+	*		data {object} the data provided by the store
+	*/
+Store.on('verif', callback)
