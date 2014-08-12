@@ -38,7 +38,7 @@ Store.StoreType = {
     */
   , PLAY_STORE : 1
 	/**
-		* Mock Store
+		* Mock Store (for testing purposes)
 		*/
 	, MOCK_STORE : 2
   /**
@@ -103,9 +103,11 @@ Store.PurchaseInfo = function (transactionId, purchaseTime, purchaseState, produ
 
 /**
 	* Gets the name of the native store implementation. 
-	* @return {Store.StoreType} The store type
+	* The callback function receives the following parameters:
+	*		err {object} An error object or `null` if the operation terminated successfully
+	* 	storeType {Store.StoreType} The store type
 	*/ 
-Store.getType = function ();
+Store.getType = function (callback);
 
 
 /**
@@ -129,9 +131,11 @@ Store.start = function (callback);
 /**
 	* This method allows you to check if the Store service is available in this platform.
 	* Not all iOS and Android devices will have the Store service available so availability should be checked before doing anything else.
-	* @return {boolean} True if the service is available and false otherwise.
+	* The callback function receives the following parameters:
+	*		err {object} An error object or `null` if the operation terminated successfully
+	* 	available {boolean} True if the service is available and false otherwise.
 	*/ 
-Store.isAvailable = function ();
+Store.isAvailable = function (callback);
 
 
 /**
@@ -152,7 +156,7 @@ Store.fetch = function (productIds, callback)
 	* The callback function receives the following parameters:
 	*		err {object} An error object or `null` if the operation terminated successfully
 	*/ 
-Store.consume = function (transactionId, productId)
+Store.consume = function (transactionId, productId, callback)
 
 
 /**
