@@ -1,4 +1,11 @@
-var Store = require('vigour-purchase')
+// This code should work when
+//	 integrated into a cordova project with the purchasing plugin installed
+//	 and run when cordova is ready
+
+var Store = new WhateverYourPluginProvides()
+	, someProductId = 'someProductId'
+	, consumableProductId = 'consumableProductId'
+	, annualSubscriptionProductId = 'annualSubscriptionProductId'
 
 Store.isAvailable(function (err, available) {
 	if (err) {
@@ -63,7 +70,7 @@ Store.isAvailable(function (err, available) {
 				}
 			})
 
-			Store.fetch(['someProductId', 'consumableProductId'], function (err, validProducts) {
+			Store.fetch([someProductId, consumableProductId, annualSubscriptionProductId], function (err, validProducts) {
 				var l, i
 				if (err) {
 					console.log("Error fetching products: ", err)
@@ -75,15 +82,22 @@ Store.isAvailable(function (err, available) {
 				}
 			})
 
-			Store.buy('someProductId', function (err, info) {
+			Store.buy(someProductId, function (err, info) {
 				if (err) {
 					console.log("Error purchasing product: ", err)
 				} else {
 					console.log("Product purchase complete. PurchaseInfo: ", JSON.stringify(info))
+					Store.unsubscribe(info.productId, function (err) {
+						if (err) {
+							console.log("Error unsubscribing: ", err)
+						} else {
+							console.log("Unsubscription successful")
+						}
+					})
 				}
 			})
 
-			Store.buyModal('consumableProductId', function (err, info) {
+			Store.buyModal(consumableProductId, function (err, info) {
 				if (err) {
 					console.log("Error purchasing product: ", err)
 				} else {
@@ -98,22 +112,29 @@ Store.isAvailable(function (err, available) {
 				}
 			})
 
-			Store.unsubscribe('someProductId', function (err) {
+			Store.buy(annualSubscriptionProductId, function (err, info) {
 				if (err) {
-					console.log("Error unsubscribing: ", err)
+					console.log("Error purchasing annual subscription: ", err)
 				} else {
-					console.log("Unsubscription successful")
+					console.log("Annual subscription complete. PurchasInfo: ", JSON.stringify(info))
+					Store.unsubscribe(info.productId, function (err) {
+						if (err) {
+							console.log("Error unsubscribing: ", err)
+						} else {
+							console.log("Unsubscription from annual subscription successful. Monthly payments will continue until subscription expires, but subscription will not then be renewed")
+						}
+					})
 				}
 			})
 
-			Store.isPurchased('someProductId', function (err, purchased) {
+			Store.isPurchased(someProductId, function (err, purchased) {
 				if (err) {
-					console.log("Error checking the purchased status of 'someProductId'")
+					console.log("Error checking the purchased status of ", someProductId)
 				} else {
 					if (purchased) {
-						console.log("'someProductId' is already purchased")
+						console.log("Already purchased", someProductId)
 					} else {
-						console.log("'someProductId' is not already purchased")
+						console.log("Not already purchased", someProductId)
 					}
 				}
 			})
