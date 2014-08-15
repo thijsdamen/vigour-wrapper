@@ -242,7 +242,7 @@ Store.refundPurchase = function (transactionId)
 Store.expirePurchase = function (transactionId)
 
 
-// Store should use the same event emitter we use in vigour-js (EventEmitter 3) to provide `Store.on`, `Store.off`, etc., allowing one to listen to the following events:
+// Store should use the same event emitter we use in vigour-js [EventEmitter3](https://www.npmjs.org/package/eventemitter3) to provide `Store.on`, `Store.off`, etc., allowing one to listen to the following events:
 
 
 /**

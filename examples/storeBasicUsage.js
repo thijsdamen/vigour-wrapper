@@ -21,6 +21,8 @@ Store.isAvailable(function (err, available) {
 				}
 			})
 
+			// Store should use the same event emitter we use in vigour-js [EventEmitter3](https://www.npmjs.org/package/eventemitter3) to provide `Store.on`, `Store.off`, `Store.once`, etc.
+
 			Store.on('fetch', function () {
 				console.log("Fetch operation started")
 			})
