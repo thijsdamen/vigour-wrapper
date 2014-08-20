@@ -30,9 +30,9 @@
 - (void)fetch:(CDVInvokedUrlCommand*)command
 {
 
-	if(command.arguments.count==0)
+	if(command.arguments) 
 	{
-		CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Arg was null"];
+		[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Arg was null"];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 		return;
 	}
@@ -73,7 +73,7 @@
     }
 		
 		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:products];
-//		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 		
 
 }

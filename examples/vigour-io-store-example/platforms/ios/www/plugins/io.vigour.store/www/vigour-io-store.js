@@ -1,4 +1,4 @@
-"use strict";
+cordova.define("io.vigour.store.VigourIoStore", function(require, exports, module) { "use strict";
 
 var Store = module.exports;
 var PLUGIN_ID = "VigourIoStore";
@@ -20,3 +20,4 @@ Store.fetch = function (productIds, callback) {
 	}
 	cordova.exec(callback, callback, PLUGIN_ID, "fetch", productIds);
 };
+});
