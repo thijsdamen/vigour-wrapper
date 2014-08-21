@@ -70,6 +70,15 @@
     for (SKProduct *product in products)
     {
         NSLog(@"Product not found: %@", product);
+        @property(nonatomic, readonly) NSString *localizedDescription NS_AVAILABLE_IOS(3_0);
+        
+        @property(nonatomic, readonly) NSString *localizedTitle NS_AVAILABLE_IOS(3_0);
+        
+        @property(nonatomic, readonly) NSDecimalNumber *price NS_AVAILABLE_IOS(3_0);
+        
+        @property(nonatomic, readonly) NSLocale *priceLocale NS_AVAILABLE_IOS(3_0);
+        
+        @property(nonatomic, readonly) NSString *productIdentifier NS_AVAILABLE_IOS(3_0);
     }
 		
 		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:products];
