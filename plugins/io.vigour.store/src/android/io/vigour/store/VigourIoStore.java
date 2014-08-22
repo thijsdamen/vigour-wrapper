@@ -1,13 +1,13 @@
+/**
+ * In App Billing Plugin
+ * @author Guillaume Charhon - Smart Mobile Software
+ * @modifications Brian Thurlow 10/16/13
+ *
+ */
 package io.vigour.store;
 
 import android.content.Intent;
 import android.util.Log;
-
-import io.vigour.store.util.IabHelper;
-import io.vigour.store.util.IabResult;
-import io.vigour.store.util.Inventory;
-import io.vigour.store.util.Purchase;
-import io.vigour.store.util.SkuDetails;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -17,6 +17,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.vigour.R;
+import io.vigour.store.util.IabHelper;
+import io.vigour.store.util.IabResult;
+import io.vigour.store.util.Inventory;
+import io.vigour.store.util.Purchase;
+import io.vigour.store.util.SkuDetails;
 
 public class VigourIoStore extends CordovaPlugin
 {
@@ -62,20 +69,33 @@ public class VigourIoStore extends CordovaPlugin
 
 				init(sku);
 
-			} else if ("getProductDetails".equals(action)) {
+			} else if ("getProductDetails".equals(action))
+            {
 				JSONArray jsonSkuList = new JSONArray(data.getString(0));
 				final List<String> sku = new ArrayList<String>();			
 				int len = jsonSkuList.length();
 				Log.d(TAG, "Num SKUs Found: "+len);
-   			 for (int i=0;i<len;i++){
-    				sku.add(jsonSkuList.get(i).toString());
-					Log.d(TAG, "Product SKU Added: "+jsonSkuList.get(i).toString());
-   			 }
-				getProductDetails(sku);				
-			} else {
-				// No handler for the action
-				isValidAction = false;
-			}
+                 for (int i=0;i<len;i++){
+                        sku.add(jsonSkuList.get(i).toString());
+                        Log.d(TAG, "Product SKU Added: "+jsonSkuList.get(i).toString());
+                 }
+				getProductDetails(sku);
+            } else if ("buy".equals(action)) {
+                // Buy an item
+                // Get Product Id
+                final String sku = data.getString(0);
+                buy(sku);
+            } else if ("subscribe".equals(action)) {
+                // Subscribe to an item
+                // Get Product Id
+                final String sku = data.getString(0);
+                subscribe(sku);
+            }
+
+            else {
+                        // No handler for the action
+                        isValidAction = false;
+                    }
 		} catch (IllegalStateException e){
 			callbackContext.error(e.getMessage());
 		} catch (JSONException e){
@@ -91,11 +111,7 @@ public class VigourIoStore extends CordovaPlugin
 		Log.d(TAG, "init start");
 		// Some sanity checks to see if the developer (that's you!) really followed the
         // instructions to run this plugin
-                int billingKey = cordova.getActivity().getResources().getIdentifier("billing_key", "string", cordova.getActivity().getPackageName());
-                String base64EncodedPublicKey = cordova.getActivity().getString(billingKey);
-
-	 	if (base64EncodedPublicKey.contains("CONSTRUCT_YOUR"))
-	 		throw new RuntimeException("Please put your app's public key in InAppBillingPlugin.java. See ReadMe.");
+        String base64EncodedPublicKey = cordova.getActivity().getString(R.string.billing_key);
 
 	 	// Create the helper, passing it our context and the public key to verify signatures with
         Log.d(TAG, "Creating IAB helper.");
@@ -134,7 +150,46 @@ public class VigourIoStore extends CordovaPlugin
             }			
         });
     }
-	
+
+
+    // Buy an item
+    private void buy(final String sku){
+		/* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a sample, we just use
+         *        an empty string, but on a production app you should generate this. */
+        final String payload = "";
+
+        if (mHelper == null){
+            callbackContext.error("Billing plugin was not initialized");
+            return;
+        }
+
+        this.cordova.setActivityResultCallback(this);
+
+        mHelper.launchPurchaseFlow(cordova.getActivity(), sku, RC_REQUEST,
+                mPurchaseFinishedListener, payload);
+    }
+
+    private void subscribe(final String sku){
+        if (mHelper == null){
+            callbackContext.error("Billing plugin was not initialized");
+            return;
+        }
+        if (!mHelper.subscriptionsSupported()) {
+            callbackContext.error("Subscriptions not supported on your device yet. Sorry!");
+            return;
+        }
+
+		/* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a sample, we just use
+         *        an empty string, but on a production app you should generate this. */
+        final String payload = "";
+
+        this.cordova.setActivityResultCallback(this);
+        Log.d(TAG, "Launching purchase flow for subscription.");
+
+        mHelper.launchPurchaseFlow(cordova.getActivity(), sku, IabHelper.ITEM_TYPE_SUBS, RC_REQUEST, mPurchaseFinishedListener, payload);
+    }
 
 	//Get SkuDetails for skus
 	private void getProductDetails(final List<String> skus) {
@@ -249,6 +304,39 @@ public class VigourIoStore extends CordovaPlugin
         
         return true;
     }
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+
+            // Have we been disposed of in the meantime? If so, quit.
+            if (mHelper == null) {
+                callbackContext.error("The billing helper has been disposed");
+            }
+
+            if (result.isFailure()) {
+                callbackContext.error("Error purchasing: " + result);
+                return;
+            }
+
+            if (!verifyDeveloperPayload(purchase)) {
+                callbackContext.error("Error purchasing. Authenticity verification failed.");
+                return;
+            }
+
+            Log.d(TAG, "Purchase successful.");
+
+            // add the purchase to the inventory
+            myInventory.addPurchase(purchase);
+
+            try {
+                callbackContext.success(new JSONObject(purchase.getOriginalJson()));
+            } catch (JSONException e) {
+                callbackContext.error("Could not create JSON object from purchase object");
+            }
+
+        }
+    };
     
     // We're being destroyed. It's important to dispose of the helper here!
     @Override
