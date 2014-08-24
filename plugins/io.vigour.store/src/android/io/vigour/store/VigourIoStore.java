@@ -90,6 +90,12 @@ public class VigourIoStore extends CordovaPlugin
                 // Get Product Id
                 final String sku = data.getString(0);
                 subscribe(sku);
+            } else if ("getPurchases".equals(action)) {
+                // Get the list of purchases
+                JSONArray jsonSkuList = new JSONArray();
+                jsonSkuList = getPurchases();
+                // Call the javascript back
+                callbackContext.success(jsonSkuList);
             }
 
             else {
@@ -200,6 +206,24 @@ public class VigourIoStore extends CordovaPlugin
 
         Log.d(TAG, "Beginning Sku(s) Query!");
         mHelper.queryInventoryAsync(true, skus, mGotDetailsListener);
+    }
+
+    // Get the list of purchases
+    private JSONArray getPurchases() throws JSONException {
+        // Get the list of owned items
+        if(myInventory == null){
+            callbackContext.error("Billing plugin was not initialized");
+            return new JSONArray();
+        }
+        List<Purchase>purchaseList = myInventory.getAllPurchases();
+
+        // Convert the java list to json
+        JSONArray jsonPurchaseList = new JSONArray();
+        for (Purchase p : purchaseList) {
+            jsonPurchaseList.put(new JSONObject(p.getOriginalJson()));
+        }
+
+        return jsonPurchaseList;
     }
 	
 	// Listener that's called when we finish querying the items and subscriptions we own
