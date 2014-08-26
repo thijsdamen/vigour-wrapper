@@ -3,3 +3,4 @@ node_modules
 .DS_Store
 .*.sw[op]
 *.mp4
+examples/vigour-io-store-example/platforms/ios/VigourIoStoreExample.xcodeproj/project.xcworkspace/xcuserdata/alexandervanderwerff.xcuserdatad/UserInterfaceState.xcuserstate
