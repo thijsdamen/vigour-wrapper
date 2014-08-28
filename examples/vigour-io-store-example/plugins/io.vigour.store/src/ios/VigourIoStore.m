@@ -12,7 +12,7 @@
 #import <StoreKit/StoreKit.h>
 
 @interface VigourIoStore() <SKProductsRequestDelegate>
-
+@property(nonatomic, strong) NSMutableDictionary *commands;
 @end
 
 @implementation VigourIoStore
@@ -30,12 +30,13 @@
 - (void)fetch:(CDVInvokedUrlCommand*)command
 {
 
-	if(command.arguments) 
+	if(command.arguments.count==0)
 	{
-		[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Arg was null"];
+		CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No products where set"];
 		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 		return;
 	}
+    
 	
 	if ([SKPaymentQueue canMakePayments])
 	{
@@ -43,10 +44,17 @@
 	                                  initWithProductIdentifiers:
 	                                  [NSSet setWithArray:command.arguments]];
 	    request.delegate = self;
-    
+        
+        self.commands[command.callbackId] = request;
+        
 	    [request start];
 	}
 
+}
+
+- (BOOL)canMakePurchases
+{
+    return [SKPaymentQueue canMakePayments];
 }
 
 #pragma mark -
@@ -70,10 +78,19 @@
     for (SKProduct *product in products)
     {
         NSLog(@"Product not found: %@", product);
+//        @property(nonatomic, readonly) NSString *localizedDescription NS_AVAILABLE_IOS(3_0);
+//        
+//        @property(nonatomic, readonly) NSString *localizedTitle NS_AVAILABLE_IOS(3_0);
+//        
+//        @property(nonatomic, readonly) NSDecimalNumber *price NS_AVAILABLE_IOS(3_0);
+//        
+//        @property(nonatomic, readonly) NSLocale *priceLocale NS_AVAILABLE_IOS(3_0);
+//        
+//        @property(nonatomic, readonly) NSString *productIdentifier NS_AVAILABLE_IOS(3_0);
     }
 		
 		CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:products];
-		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+//		[self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 		
 
 }
@@ -81,6 +98,15 @@
 -(void)request:(SKRequest *)request didFailWithError:(NSError *)error
 {
     NSLog(@"ERROR %@", [error localizedDescription]);
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+    for (NSString *commandID in self.commands) {
+        SKRequest *activeRequest = self.commands[commandID];
+        if([activeRequest isEqual:request]) {
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:commandID];
+            break;
+        }
+    }
+    
 }
 
 @end

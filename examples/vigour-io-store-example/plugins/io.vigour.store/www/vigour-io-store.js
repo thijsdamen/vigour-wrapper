@@ -10,6 +10,11 @@ Store.StoreType = {
   , "AMAZON_STORE" : 3
 };
 
+
+Store.init = function (parameters, callback) {
+		cordova.exec(success, fail, "VigourIoStore", "init", []);
+}
+
 Store.getType = function (callback) {
 	cordova.exec(callback, callback, PLUGIN_ID, "getType", null);
 }
