@@ -1,6 +1,7 @@
 Vigour.io Store Plugin
 ======================
 To install this plugin:    
+
 codova plugin add path_to_plugin
 
 For testing info:
