@@ -15,13 +15,16 @@
                 <ul>
                     <li><input ontouchstart="app.initAppPurchases();" type="button" value="Init store" class="green-sea-flat-button"></li>
                     <li><input ontouchstart="app.storeType();" type="button" value="Get store type " class="green-sea-flat-button"></li>
-                    <li><input ontouchstart="app.fetchProducts(['io.vigour.testNonConsumable', 'freeSub']);" type="button" value="Fetch some products" class="green-sea-flat-button"></li>
+                    <li><input ontouchstart="app.fetchProducts(['nonConsumable', 'autoRenewedSubscription', 'io.vigour.testNonConsumable', 'nonRenewingSubscription']);" type="button" value="Fetch some products" class="green-sea-flat-button"></li>
                     <li><input ontouchstart="app.fetchProducts([]);" type="button" value="Fetch products without argument" class="green-sea-flat-button"></li>
                     <li><input ontouchstart="app.triggerError();" type="button" value="Fetch no products" class="green-sea-flat-button"></li>
+                    <li><input ontouchstart="app.buy('io.vigour.testNonConsumable');" type="button" value="Buy non consumable product" class="green-sea-flat-button"></li>
+                    <li><input ontouchstart="app.restore();" type="button" value="Restore transactions" class="green-sea-flat-button"></li>
                 </ul>
             </div>
             <div id="results"></div>
         </div>
+        <script type="text/javascript" src="js/EventEmitter3.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">

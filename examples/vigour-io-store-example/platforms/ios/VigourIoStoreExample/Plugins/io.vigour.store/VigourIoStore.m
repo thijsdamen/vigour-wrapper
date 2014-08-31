@@ -11,11 +11,15 @@
 #import <Cordova/CDVViewController.h>
 #import <StoreKit/StoreKit.h>
 
+#define NILABLE(obj) ((obj) != nil ? (NSObject *)(obj) : (NSObject *)[NSNull null])
 
 @interface VigourIoStore() <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 
 @property(nonatomic, strong) NSMutableDictionary *commands;
 @property(nonatomic, strong) NSMutableDictionary *products;
+
+@property(nonatomic, copy) RequestProductsCompletionHandler requestProductsCompletionHandler;
+
 
 @property (nonatomic, assign) BOOL purchaseInProgress;
 
@@ -34,6 +38,20 @@
 }
 
 #pragma mark - Helpers
+
+- (void)jsEval:(NSString *)callbackName withMessage:(NSArray *)arguments
+{
+    NSString* jsonString = @"";
+    
+    if(arguments)
+    {
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:arguments options:1 error:nil];
+        jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
+    }
+    
+    NSString *js = [NSString stringWithFormat:@"Store.%@.apply(Store, %@);", callbackName, jsonString];
+    [self.commandDelegate evalJs:js];
+}
 
 - (void)jsCallback:(CDVInvokedUrlCommand*)command callbackType:(CDVCallbacks)type
 {
@@ -82,6 +100,20 @@
     return commandID;
 }
 
+
+- (void)requestProductsWithCommand:(CDVInvokedUrlCommand *)command completionHandler:(RequestProductsCompletionHandler)completionHandler
+{
+    SKProductsRequest *request = [[SKProductsRequest alloc]
+                                  initWithProductIdentifiers:
+                                  [NSSet setWithArray:command.arguments]];
+    request.delegate = self;
+    
+    self.commands[command.callbackId] = request;
+    
+    self.requestProductsCompletionHandler = [completionHandler copy];
+    
+    [request start];
+}
 
 #pragma mark - API
 
@@ -137,6 +169,8 @@
 		return;
 	}
     
+    
+    [self jsEval:@"fetch" withMessage:nil];
 	
 	if ([SKPaymentQueue canMakePayments])
 	{
@@ -152,6 +186,7 @@
 
 }
 
+
 - (void)buy:(CDVInvokedUrlCommand*)command
 {
     if(!_setupDone)
@@ -166,23 +201,42 @@
         return;
     }
     
-    NSString *productID = command.arguments[0];
+    self.purchaseInProgress = YES;
+
+    __typeof(self) __weak weakSelf = self;
+    [self requestProductsWithCommand:command
+                              completionHandler:^(BOOL success, NSArray *products, NSString *commandID) {
+                                  
+        __strong __typeof(weakSelf) strongSelf = weakSelf;
+                                  
+        if(!success)
+            return;
+                                  
+        for (SKProduct *product in products)
+        {
+            strongSelf.products[product.productIdentifier] = product;
+            
+            SKPayment * payment = [SKPayment paymentWithProduct:product];
+            [[SKPaymentQueue defaultQueue] addPayment:payment];
+        }
+    }];
     
-    if(!self.products[productID])
+    [self jsCallback:command callbackType:NoCallback];
+    
+}
+
+- (void)restore:(CDVInvokedUrlCommand *)command
+{
+    
+    if(!_setupDone)
     {
-        [self jsCallback:command callbackType:NoProductsSet];
+        [self jsCallback:command callbackType:StoreNotInitedCallback];
         return;
     }
     
-    SKPayment * payment = [SKPayment paymentWithProduct:self.products[productID]];
-    [[SKPaymentQueue defaultQueue] addPayment:payment];
-    
-//    SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:identifier];
-//    if ([quantity respondsToSelector:@selector(integerValue)]) {
-//        payment.quantity = [quantity integerValue];
-//    }
-
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
+
 
 - (BOOL)canMakePurchases
 {
@@ -230,7 +284,14 @@
             [self.commands removeObjectForKey:commandID];
         }
         
+        
+        if(self.requestProductsCompletionHandler)
+            self.requestProductsCompletionHandler(YES, products, commandID);
+    
     }
+    
+    self.requestProductsCompletionHandler = nil;
+    
 }
 
 -(void)request:(SKRequest *)request didFailWithError:(NSError *)error
@@ -246,6 +307,11 @@
         [self.commands removeObjectForKey:commandID];
     }
     
+    if(self.requestProductsCompletionHandler)
+        self.requestProductsCompletionHandler(NO, nil, commandID);
+    
+    self.requestProductsCompletionHandler = nil;
+    
 }
 
 
@@ -255,9 +321,22 @@
 {
     for (SKPaymentTransaction * transaction in transactions) {
         switch (transaction.transactionState) {
-            case SKPaymentTransactionStatePurchased: [self completeTransaction:transaction]; break;
-            case SKPaymentTransactionStateFailed: [self failedTransaction:transaction]; break;
-            case SKPaymentTransactionStateRestored: [self restoreTransaction:transaction];
+            case SKPaymentTransactionStatePurchasing:
+                break;
+            case SKPaymentTransactionStatePurchased:
+            {
+                [self completeTransaction:transaction];
+                break;
+            }
+            case SKPaymentTransactionStateFailed:
+            {
+                [self failedTransaction:transaction];
+                break;
+            }
+            case SKPaymentTransactionStateRestored:
+            {
+                [self restoreTransaction:transaction];
+            }
             default:
                 break;
         }
@@ -267,55 +346,63 @@
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
     NSLog(@"completeTransaction...");
-    [self provideContentForTransaction:transaction productIdentifier:transaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
+    [self jsEval:@"updatedTransactionCallback"
+     withMessage:@[@"PaymentTransactionStatePurchased",
+                   NILABLE(transaction.transactionIdentifier),
+                   NILABLE(transaction.payment.productIdentifier),
+                   NILABLE(@{})
+                   ]
+     ];
+    
 }
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
+
     NSLog(@"restoreTransaction...");
-    [self provideContentForTransaction:transaction productIdentifier: transaction.originalTransaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+
+    [self jsEval:@"updatedTransactionCallback"
+     withMessage:@[@"PaymentTransactionStateRestored",
+                   NILABLE(transaction.transactionIdentifier),
+                   NILABLE(transaction.payment.productIdentifier),
+                   NILABLE(@{})
+                   ]
+     ];
 }
 - (void)failedTransaction:(SKPaymentTransaction *)transaction
 {
-    NSLog(@"failedTransaction...");
+    NSDictionary *error = @{
+                            @"description" : @"Transaction failed",
+                            @"code": [NSNumber numberWithInteger:transaction.error.code]
+                        };
+    
     if (transaction.error.code != SKErrorPaymentCancelled) {
         NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
+        error = @{
+                  @"description" : transaction.error.localizedDescription,
+                  @"code": [NSNumber numberWithInteger:transaction.error.code]
+                };
     }
-    SKProduct * product = self.products[transaction.payment.productIdentifier];
-    [self notifyStatusForProductIdentifier: transaction.payment.productIdentifier string:@"Purchase failed."];
+    //SKProduct * product = self.products[transaction.payment.productIdentifier];
+  
     self.purchaseInProgress = NO;
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-}
+    
+//    state, transactionIdentifier, productId, error
+    [self jsEval:@"updatedTransactionCallback"
+        withMessage:@[@"PaymentTransactionStateFailed",
+                      NILABLE(transaction.transactionIdentifier),
+                      NILABLE(transaction.payment.productIdentifier),
+                      error
+                      ]
+     ];
 
-- (void)notifyStatusForProductIdentifier: (NSString *)productIdentifier string:(NSString *)string
-{
-    SKProduct * product = self.products[productIdentifier];
-    [self notifyStatusForProduct:product string:string];
-}
-
-- (void)notifyStatusForProduct:(SKProduct *)product string:(NSString *)string {
-}
-
-- (void)provideContentForTransaction:(SKPaymentTransaction *)transaction productIdentifier:(NSString *)productIdentifier
-{
-    [self provideContentForProductIdentifier:productIdentifier notify:YES];
-    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-}
-
-- (void)provideContentForProductIdentifier:(NSString *)productIdentifier notify:(BOOL)notify {
-    SKProduct * product = self.products[productIdentifier];
-    [self provideContentForProductIdentifier:productIdentifier];
-    if (notify)
-    {
-        [self notifyStatusForProductIdentifier:productIdentifier string:@"Purchase complete!"];
-    }
-    self.purchaseInProgress = NO;
 }
 
 
-- (void)provideContentForProductIdentifier: (NSString *)productIdentifier
-{
-}
 
 #pragma mark - Constants
 

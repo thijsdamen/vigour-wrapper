@@ -14,14 +14,16 @@ var app = {
 
 	},
 	initAppPurchases: function() {
+
 		app.clearOutput();
 		Store.init(function(data) {
+
 			var elem = document.createElement("div");
 			if (data.err)
 				elem.innerHTML = data.err;
-			else
+			else {
 				elem.innerHTML = "store initialized";
-			window.getComputedStyle(elem).opacity;
+			}
 			document.getElementById('results').appendChild(elem);
 		});
 	},
@@ -50,7 +52,7 @@ var app = {
 				var ul = document.createElement("ul");
 				for (var index in data.validProducts) {
 					var product = data.validProducts[index];
-					var li = document.createElement("ul");
+					var li = document.createElement("li");
 					li.innerHTML = 'title:' + product['localizedTitle'] + " description: " + product.localizedDescription + " price: " + product.price + ' id: ' + product.productIdentifier;
 					ul.appendChild(li);
 
@@ -65,9 +67,37 @@ var app = {
 	triggerError: function() {
 		app.clearOutput();
 		Store.fetch([], function(data) {
-
+			app.clearOutput();
 			var elem = document.createElement("div");
 			elem.innerHTML = data.err;
+			document.getElementById('results').appendChild(elem);
+		});
+	},
+	buy: function(args) {
+		app.clearOutput();
+		Store.buy(args, function(data) {
+			var elem = document.createElement("div");
+			if (data.err)
+				elem.innerHTML = data.err;
+			else {
+
+				elem.innerHTML = data;
+
+			}
+			document.getElementById('results').appendChild(elem);
+		});
+	},
+	restore: function() {
+		Store.restore(function(data) {
+			app.clearOutput();
+			var elem = document.createElement("div");
+			if (data.err)
+				elem.innerHTML = data.err;
+			else {
+
+				elem.innerHTML = data;
+
+			}
 			document.getElementById('results').appendChild(elem);
 		});
 	},

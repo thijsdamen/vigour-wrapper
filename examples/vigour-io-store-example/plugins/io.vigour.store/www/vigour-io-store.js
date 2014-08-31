@@ -12,7 +12,7 @@ Store.StoreType = {
 
 
 Store.init = function (parameters, callback) {
-		cordova.exec(success, fail, "VigourIoStore", "init", []);
+		cordova.exec(callback, callback, "VigourIoStore", "setup", []);
 }
 
 Store.getType = function (callback) {
@@ -20,8 +20,16 @@ Store.getType = function (callback) {
 }
 
 Store.fetch = function (productIds, callback) {
-	if (!(productIds instanceof Array)) {
-		productIds = [].push(productIds);
-	}
 	cordova.exec(callback, callback, PLUGIN_ID, "fetch", productIds);
 };
+               
+Store.buy = function (productId, callback) {
+    var productIds = [];
+    if (!(productId instanceof Array)) {
+        productIds.push(productId);
+    }
+               else {
+               productIds =productId;
+               }
+    cordova.exec(callback, callback, PLUGIN_ID, "buy", productIds);
+}

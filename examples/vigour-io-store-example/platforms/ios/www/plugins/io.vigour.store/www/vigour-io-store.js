@@ -1,4 +1,7 @@
-cordova.define("io.vigour.store.VigourIoStore", function(require, exports, module) { "use strict";
+cordova.define("io.vigour.store.VigourIoStore",
+               function(require, exports, module) {
+               
+               "use strict";
 
 var Store = module.exports;
 var PLUGIN_ID = "VigourIoStore";
@@ -12,7 +15,7 @@ Store.StoreType = {
 
 
 Store.init = function (callback) {
-    cordova.exec(callback, callback, "VigourIoStore", "setup", []);
+		cordova.exec(callback, callback, "VigourIoStore", "setup", []);
 }
 
 Store.getType = function (callback) {
@@ -20,14 +23,43 @@ Store.getType = function (callback) {
 }
 
 Store.fetch = function (productIds, callback) {
-	if (!(productIds instanceof Array)) {
-		productIds = [].push(productIds);
-	}
 	cordova.exec(callback, callback, PLUGIN_ID, "fetch", productIds);
 };
                
 Store.buy = function (productId, callback) {
-	cordova.exec(callback, callback, PLUGIN_ID, "buy", productIds);
+    var productIds = [];
+    if (!(productId instanceof Array)) {
+        productIds.push(productId);
+    }
+               else {
+               productIds =productId;
+               }
+    cordova.exec(callback, callback, PLUGIN_ID, "buy", productIds);
 }
                
+Store.restore = function (callback) {
+cordova.exec(callback, callback, PLUGIN_ID, "restore", []);
+}
+
+
+Store.updatedTransactionCallback = function(state, transactionIdentifier, productId, error) {
+               switch(state) {
+                    case "PaymentTransactionStatePurchased":
+                        alert('purchased: ' + transactionIdentifier + ' ' + productId);
+                    return;
+                    case "PaymentTransactionStateFailed":
+                    alert(error.description + ' ' + error.code);
+                    return;
+               case "PaymentTransactionStateRestored":
+               alert('resored '+transactionIdentifier +' ' + productId);
+               return;
+               case "PaymentTransactionStateFinished":
+               alert('finished ' + transactionIdentifier + ' ' + productId);
+               return;
+               }
+};
+               
 });
+
+
+

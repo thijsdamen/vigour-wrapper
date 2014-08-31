@@ -4,3 +4,6 @@ node_modules
 .*.sw[op]
 *.mp4
 examples/vigour-io-store-example/platforms/ios/VigourIoStoreExample.xcodeproj/project.xcworkspace/xcuserdata/alexandervanderwerff.xcuserdatad/UserInterfaceState.xcuserstate
+examples/vigour-io-store-example/platforms/ios/CordovaLib/CordovaLib.xcodeproj/xcuserdata/alexandervanderwerff.xcuserdatad/xcschemes/CordovaLib.xcscheme
+examples/vigour-io-store-example/platforms/ios/VigourIoStoreExample.xcodeproj/xcuserdata/alexandervanderwerff.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
+examples/vigour-io-store-example/platforms/ios/VigourIoStoreExample.xcodeproj/xcuserdata/alexandervanderwerff.xcuserdatad/xcschemes/VigourIoStoreExample.xcscheme

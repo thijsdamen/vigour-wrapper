@@ -8,6 +8,10 @@
 
 #import <Cordova/CDVPlugin.h>
 
+@class SKPaymentTransaction;
+
+typedef void (^RequestProductsCompletionHandler) (BOOL success, NSArray * products, NSString *commandId);
+
 typedef enum : NSUInteger {
     NoCallback = 0,
     StoreNotInitedCallback = 1,
@@ -23,6 +27,10 @@ typedef enum : NSUInteger {
 
 - (void)buy:(CDVInvokedUrlCommand*)command;
 
+- (void)restore:(CDVInvokedUrlCommand*)command;
+
 - (void)getType:(CDVInvokedUrlCommand*)command;
+
+- (void)requestProductsWithCommand:(CDVInvokedUrlCommand *)command completionHandler:(RequestProductsCompletionHandler)completionHandler;
 
 @end
