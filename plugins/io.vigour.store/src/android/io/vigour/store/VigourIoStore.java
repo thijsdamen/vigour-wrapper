@@ -1,11 +1,6 @@
-/**
- * In App Billing Plugin
- * @author Guillaume Charhon - Smart Mobile Software
- * @modifications Brian Thurlow 10/16/13
- *
- */
 package io.vigour.store;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
@@ -18,7 +13,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vigour.R;
 import io.vigour.store.util.IabHelper;
 import io.vigour.store.util.IabResult;
 import io.vigour.store.util.Inventory;
@@ -27,6 +21,14 @@ import io.vigour.store.util.SkuDetails;
 
 public class VigourIoStore extends CordovaPlugin
 {
+    public static boolean isKindleFire()
+    {
+        // https://developer.amazon.com/appsandservices/solutions/devices/kindle-fire/specifications/01-device-and-feature-specifications
+        return android.os.Build.MANUFACTURER.equals("Amazon")
+                && (android.os.Build.MODEL.equals("Kindle Fire")
+                || android.os.Build.MODEL.startsWith("KF"));
+    }
+
 	private final Boolean ENABLE_DEBUG_LOGGING = true;
 	private final String TAG = "VigourIoStore";
 
@@ -117,7 +119,10 @@ public class VigourIoStore extends CordovaPlugin
 		Log.d(TAG, "init start");
 		// Some sanity checks to see if the developer (that's you!) really followed the
         // instructions to run this plugin
-        String base64EncodedPublicKey = cordova.getActivity().getString(R.string.billing_key);
+
+        Activity activity = cordova.getActivity();
+        int resId = activity.getResources().getIdentifier("billing_key", "string", activity.getPackageName());
+        String base64EncodedPublicKey = activity.getString(resId);
 
 	 	// Create the helper, passing it our context and the public key to verify signatures with
         Log.d(TAG, "Creating IAB helper.");
