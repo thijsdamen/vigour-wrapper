@@ -53,6 +53,9 @@
 	<source-file src="src/android/com/android/vending/billing/IInAppBillingService.aidl" target-dir="src/com/android/vending/billing" />
 
         <source-file src="src/android/io/vigour/store/VigourIoStore.java" target-dir="src/io/vigour/store" />
+        <source-file src="src/android/io/vigour/store/StoreHandler.java" target-dir="src/io/vigour/store" />
+        <source-file src="src/android/io/vigour/store/AmazonHandler.java" target-dir="src/io/vigour/store" />
+        <source-file src="src/android/io/vigour/store/PlayStoreHandler.java" target-dir="src/io/vigour/store" />
 
 	<source-file src="src/android/io/vigour/store/util/Base64.java" target-dir="src/io/vigour/store/util" />
 	<source-file src="src/android/io/vigour/store/util/Base64DecoderException.java" target-dir="src/io/vigour/store/util" />
@@ -63,6 +66,8 @@
 	<source-file src="src/android/io/vigour/store/util/Purchase.java" target-dir="src/io/vigour/store/util" />
 	<source-file src="src/android/io/vigour/store/util/Security.java" target-dir="src/io/vigour/store/util" />
 	<source-file src="src/android/io/vigour/store/util/SkuDetails.java" target-dir="src/io/vigour/store/util" />
+
+	<source-file src="src/android/libs/in-app-purchasing-2.0.0.jar" target-dir="libs" framework="true" />
 
     </platform>
 
