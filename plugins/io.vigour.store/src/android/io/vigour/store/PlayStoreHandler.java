@@ -194,7 +194,10 @@ public class PlayStoreHandler extends StoreHandler
         // Convert the java list to json
         JSONArray skus = new JSONArray();
         for (Purchase p : myInventory.getAllPurchases()) {
-            skus.put(new JSONObject(p.getOriginalJson()));
+
+            JSONObject jsonSku = new JSONObject();
+            jsonSku.put(p.getSku(), new JSONObject(p.getOriginalJson()));
+            skus.put(jsonSku);
         }
 
         // Call the javascript back
@@ -310,7 +313,9 @@ public class PlayStoreHandler extends StoreHandler
             try {
                 for (SkuDetails sku : skuList) {
                     Log.d(TAG, "SKUDetails: Title: "+sku.getTitle());
-                    jsonSkuList.put(sku.toJson());
+                    JSONObject jsonSku = new JSONObject();
+                    jsonSku.put(sku.getSku(), sku.toJson());
+                    jsonSkuList.put(jsonSku);
                 }
             } catch (JSONException e) {
                 callbackContext.error(e.getMessage());
