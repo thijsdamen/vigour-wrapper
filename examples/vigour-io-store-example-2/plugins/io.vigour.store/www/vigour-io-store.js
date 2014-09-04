@@ -28,7 +28,7 @@ Store.getType = function(cb) {
 Store.fetch = function(productIds, cb) {
 	exec({
 		fn: 'fetch'
-		, args: productIds
+		, args: [productIds]
 		, cb: cb
 	})
 }

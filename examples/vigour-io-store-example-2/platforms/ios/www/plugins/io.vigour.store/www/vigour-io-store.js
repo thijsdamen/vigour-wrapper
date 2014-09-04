@@ -1,4 +1,4 @@
-"use strict";
+cordova.define("io.vigour.store.VigourIoStore", function(require, exports, module) { "use strict";
 
 var Store = {}
 	, queue = []
@@ -136,3 +136,5 @@ Store.updatedTransactionCallback = function(state, transactionIdentifier, produc
 			alert("unhandled updatedTransactionCallback state: " + state)
 	}
 }
+
+});
