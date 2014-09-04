@@ -16,7 +16,7 @@ Store.init = function(callback) {
 }
 
 Store.getType = function(callback) {
-	cordova.exec(callback, callback, PLUGIN_ID, "getType", null);
+	cordova.exec(callback, callback, PLUGIN_ID, "getType", []);
 }
 
 Store.fetch = function(productIds, callback) {
