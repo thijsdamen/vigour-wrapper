@@ -5,6 +5,7 @@ var Store = {}
 	, ready = false
 	, initCalled = false
 	, initError = false
+	, waiting = false
 
 module.exports = exports = Store
 
@@ -57,11 +58,11 @@ Store.unsubscribe = function (productId, cb) {
 
 function exec (opts) {
 	var needsInit = (opts.needsInit === undefined) ? true : opts.needsInit
+	queue.push(opts)
 	if (needsInit && !ready) {
-		queue.push(opts)
 		if (!initCalled) {
 			initCalled = true
-			execute({
+			queue.unshift({
 				fn: 'setup'
 				, cb: function (err) {
 					if (err) {
@@ -71,17 +72,11 @@ function exec (opts) {
 						initError = false
 						ready = true
 					}
-					next()
 				}
 			})
 		}
-	} else {
-		if (queue.length === 0) {
-			execute(opts)
-		} else {
-			queue.push(opts)
-		}
 	}
+	next()
 }
 
 function execute (opts) {
@@ -89,10 +84,12 @@ function execute (opts) {
 	cordova.exec(
 		function (response) {
 			opts.cb(null, response)
+			waiting = false
 			next()
 		}
 		, function (err) {
 			opts.cb(err)
+			waiting = false
 			next()
 		}
 		, Store.PLUGIN_ID
@@ -101,12 +98,21 @@ function execute (opts) {
 }
 
 function next () {
-	var next = queue.shift()
-	if (next) {
-		if (initError) {
-			next.cb(initError)
+	var nextUp
+	if (!waiting) {
+		waiting = true
+		nextUp = queue.shift()
+		if (nextUp) {
+			if (initError) {
+				alert('init error')
+				waiting = false
+				nextUp.cb(initError)
+				next()
+			} else {
+				execute(nextUp)
+			}
 		} else {
-			execute(next)
+			waiting = false
 		}
 	}
 }
