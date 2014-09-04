@@ -29,7 +29,7 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     @Override
     void getType(final CallbackContext callbackContext) throws Exception
     {
-        callbackContext.success("{3}");
+        callbackContext.success("{\"type\":3}");
     }
 
     @Override

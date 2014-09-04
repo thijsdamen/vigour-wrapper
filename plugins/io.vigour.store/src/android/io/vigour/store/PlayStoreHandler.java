@@ -43,7 +43,7 @@ public class PlayStoreHandler extends StoreHandler
     @Override
     void getType(final CallbackContext callbackContext) throws Exception
     {
-        callbackContext.success("{1}");
+        callbackContext.success("{\"type\":1}");
     }
 
     @Override
