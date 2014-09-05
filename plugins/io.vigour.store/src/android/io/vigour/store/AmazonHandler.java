@@ -8,6 +8,7 @@ import com.amazon.device.iap.model.Product;
 import com.amazon.device.iap.model.ProductDataResponse;
 import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
+import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
 
 import org.apache.cordova.CallbackContext;
@@ -29,6 +30,9 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     private String currentUserId = null;
     private String currentMarketplace = null;
 
+    private RequestId requestId;
+
+
     public AmazonHandler(VigourIoStore ioStore) {
         super(ioStore);
     }
@@ -47,7 +51,7 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
         PurchasingService.registerListener(ioStore.cordova.getActivity().getApplicationContext(), this);
         Log.i(TAG, "init: sandbox mode is:" + PurchasingService.IS_SANDBOX_MODE);
 
-        PurchasingService.getUserData();
+        requestId = PurchasingService.getUserData();
     }
 
     @Override
@@ -61,7 +65,7 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
             Log.d(TAG, "Product SKU Added: "+data.get(i).toString());
         }
 
-        PurchasingService.getProductData(skus);
+        requestId = PurchasingService.getProductData(skus);
     }
 
     @Override
@@ -70,7 +74,7 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
         this.callbackContext = callbackContext;
 
         final String sku = data.getString(0);
-        PurchasingService.purchase(sku);
+        requestId = PurchasingService.purchase(sku);
     }
 
     @Override
@@ -96,20 +100,29 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     @Override
     public void onUserDataResponse(UserDataResponse response)
     {
-        Log.d(TAG, "onUserDataResponse");
+        //Log.v("MYTEST", "onUserDataResponse " + response.getRequestId() + " " + requestId);
 
         final UserDataResponse.RequestStatus status = response.getRequestStatus();
 
         switch(status) {
             case SUCCESSFUL:
+
                 currentUserId = response.getUserData().getUserId();
                 currentMarketplace = response.getUserData().getMarketplace();
-                callbackContext.success();
+
+                if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                    callbackContext.success();
+                }
+
                 break;
 
             case FAILED:
             case NOT_SUPPORTED:
-                callbackContext.error("Failed to get user data.");
+
+                if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                    callbackContext.error("Failed to get user data.");
+                }
+
                 break;
         }
 
@@ -118,9 +131,12 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     @Override
     public void onProductDataResponse(ProductDataResponse response)
     {
+        // Log.v("MYTEST", "onProductDataResponse " + response.getRequestId() + " " + requestId);
+
         try {
 
-            switch (response.getRequestStatus()) {
+            switch (response.getRequestStatus())
+            {
                 case SUCCESSFUL:
                     for (final String s : response.getUnavailableSkus()) {
                         Log.v(TAG, "Unavailable SKU:" + s);
@@ -144,12 +160,18 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
                         Log.v(TAG, String.format("Product: %s\n Type: %s\n SKU: %s\n Price: %s\n Description: %s\n", product.getTitle(), product.getProductType(), product.getSku(), product.getPrice(), product.getDescription()));
                     }
 
-                    callbackContext.success(jProducts);
+                    if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                        callbackContext.success(jProducts);
+                    }
+
                     break;
 
                 case FAILED:
 
-                    callbackContext.error(response.toString());
+                    if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                        callbackContext.error(response.toString());
+                    }
+
                     Log.v(TAG, "ProductDataRequestStatus: FAILED");
                     break;
             }
@@ -157,13 +179,17 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
         }
         catch(JSONException e)
         {
-            callbackContext.error(e.getMessage());
+            if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                callbackContext.error(e.getMessage());
+            }
         }
     }
 
     @Override
     public void onPurchaseResponse(PurchaseResponse response)
     {
+        // Log.v("MYTEST", "onPurchaseResponse " + response.getRequestId() + " " + requestId);
+
         final PurchaseResponse.RequestStatus status = response.getRequestStatus();
 
         try {
@@ -174,18 +200,28 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
                 jResponse.put("receiptId", response.getReceipt().getReceiptId());
                 jResponse.put("userId", response.getUserData().getUserId());
 
-                callbackContext.success(new JSONObject().put(response.getReceipt().getSku(), jResponse));
+                if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                    callbackContext.success(new JSONObject().put(response.getReceipt().getSku(), jResponse));
+                }
+            }
+            else
+            {
+                if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                    callbackContext.error(response.getRequestStatus().toString());
+                }
             }
         }
         catch (JSONException e)
         {
-            callbackContext.error(e.getMessage());
+            if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
+                callbackContext.error(e.getMessage());
+            }
         }
-
     }
 
     @Override
-    public void onPurchaseUpdatesResponse(PurchaseUpdatesResponse purchaseUpdatesResponse) {
-
+    public void onPurchaseUpdatesResponse(PurchaseUpdatesResponse response)
+    {
+        //Log.v("MYTEST", "onPurchaseUpdatesResponse " + response.getRequestId() + " " + requestId);
     }
 }
