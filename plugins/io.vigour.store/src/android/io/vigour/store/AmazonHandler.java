@@ -69,6 +69,8 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     {
         this.callbackContext = callbackContext;
 
+        final String sku = data.getString(0);
+        PurchasingService.purchase(sku);
     }
 
     @Override
@@ -160,7 +162,25 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     }
 
     @Override
-    public void onPurchaseResponse(PurchaseResponse purchaseResponse) {
+    public void onPurchaseResponse(PurchaseResponse response)
+    {
+        final PurchaseResponse.RequestStatus status = response.getRequestStatus();
+
+        try {
+            if (status == PurchaseResponse.RequestStatus.SUCCESSFUL)
+            {
+                JSONObject jResponse = new JSONObject();
+                jResponse.put("sku", response.getReceipt().getSku());
+                jResponse.put("receiptId", response.getReceipt().getReceiptId());
+                jResponse.put("userId", response.getUserData().getUserId());
+
+                callbackContext.success(new JSONObject().put(response.getReceipt().getSku(), jResponse));
+            }
+        }
+        catch (JSONException e)
+        {
+            callbackContext.error(e.getMessage());
+        }
 
     }
 
