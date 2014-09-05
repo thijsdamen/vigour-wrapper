@@ -52,14 +52,9 @@ public class PlayStoreHandler extends StoreHandler
         this.callbackContext = callbackContext;
 
         final List<String> skus = new ArrayList<String>();
-        if(data.length() > 0){
-            JSONArray jsonSkuList = new JSONArray(data.getString(0));
-            int len = jsonSkuList.length();
-            Log.d(TAG, "Num SKUs Found: " + len);
-            for (int i=0;i<len;i++){
-                skus.add(jsonSkuList.get(i).toString());
-                Log.d(TAG, "Product SKU Added: "+jsonSkuList.get(i).toString());
-            }
+        for (int i=0;i<data.length();i++){
+            skus.add(data.get(i).toString());
+            Log.d(TAG, "Product SKU Added: "+data.get(i).toString());
         }
 
         Log.d(TAG, "init start");
@@ -113,13 +108,10 @@ public class PlayStoreHandler extends StoreHandler
     {
         this.callbackContext = callbackContext;
 
-        JSONArray jsonSkuList = new JSONArray(data.getString(0));
         final List<String> skus = new ArrayList<String>();
-        int len = jsonSkuList.length();
-        Log.d(TAG, "Num SKUs Found: "+len);
-        for (int i=0;i<len;i++){
-            skus.add(jsonSkuList.get(i).toString());
-            Log.d(TAG, "Product SKU Added: "+jsonSkuList.get(i).toString());
+        for (int i=0;i<data.length();i++){
+            skus.add(data.get(i).toString());
+            Log.d(TAG, "Product SKU Added: "+data.get(i).toString());
         }
 
         if (mHelper == null) {

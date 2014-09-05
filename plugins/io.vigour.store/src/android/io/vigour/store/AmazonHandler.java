@@ -55,16 +55,13 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     {
         this.callbackContext = callbackContext;
 
-        JSONArray jsonSkuList = new JSONArray(data.getString(0));
-        final Set<String> productSkus = new HashSet<String>();
-        int len = jsonSkuList.length();
-        Log.d(TAG, "Num SKUs Found: "+len);
-        for (int i=0; i<len; i++){
-            productSkus.add(jsonSkuList.get(i).toString());
-            Log.d(TAG, "Product SKU Added: "+jsonSkuList.get(i).toString());
+        final Set<String> skus = new HashSet<String>();
+        for (int i=0; i<data.length(); i++){
+            skus.add(data.get(i).toString());
+            Log.d(TAG, "Product SKU Added: "+data.get(i).toString());
         }
 
-        PurchasingService.getProductData(productSkus);
+        PurchasingService.getProductData(skus);
     }
 
     @Override
@@ -135,9 +132,12 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
 
                         JSONObject jProduct = new JSONObject();
                         jProduct.put("title", product.getTitle());
+                        jProduct.put("type", product.getProductType());
+                        jProduct.put("price", product.getPrice());
+                        jProduct.put("sku", product.getSku());
+                        jProduct.put("description", product.getDescription());
 
                         jProducts.put(new JSONObject().put(key, jProduct));
-
 
                         Log.v(TAG, String.format("Product: %s\n Type: %s\n SKU: %s\n Price: %s\n Description: %s\n", product.getTitle(), product.getProductType(), product.getSku(), product.getPrice(), product.getDescription()));
                     }
