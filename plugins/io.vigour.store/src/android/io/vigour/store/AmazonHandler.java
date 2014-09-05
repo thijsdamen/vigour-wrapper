@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.amazon.device.iap.PurchasingListener;
 import com.amazon.device.iap.PurchasingService;
+import com.amazon.device.iap.model.Product;
 import com.amazon.device.iap.model.ProductDataResponse;
 import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
@@ -11,6 +12,12 @@ import com.amazon.device.iap.model.UserDataResponse;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by andrej on 03/09/14.
@@ -46,21 +53,39 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     @Override
     void getProductDetails(JSONArray data, final CallbackContext callbackContext) throws Exception
     {
+        this.callbackContext = callbackContext;
+
+        JSONArray jsonSkuList = new JSONArray(data.getString(0));
+        final Set<String> productSkus = new HashSet<String>();
+        int len = jsonSkuList.length();
+        Log.d(TAG, "Num SKUs Found: "+len);
+        for (int i=0; i<len; i++){
+            productSkus.add(jsonSkuList.get(i).toString());
+            Log.d(TAG, "Product SKU Added: "+jsonSkuList.get(i).toString());
+        }
+
+        PurchasingService.getProductData(productSkus);
     }
 
     @Override
     void buy(JSONArray data, final CallbackContext callbackContext) throws Exception
     {
+        this.callbackContext = callbackContext;
+
     }
 
     @Override
     void subscribe(JSONArray data, final CallbackContext callbackContext) throws Exception
     {
+        this.callbackContext = callbackContext;
+
     }
 
     @Override
     void getPurchases(JSONArray data, final CallbackContext callbackContext) throws Exception
     {
+        this.callbackContext = callbackContext;
+
     }
 
     @Override
@@ -92,8 +117,46 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     }
 
     @Override
-    public void onProductDataResponse(ProductDataResponse productDataResponse) {
+    public void onProductDataResponse(ProductDataResponse response)
+    {
+        try {
 
+            switch (response.getRequestStatus()) {
+                case SUCCESSFUL:
+                    for (final String s : response.getUnavailableSkus()) {
+                        Log.v(TAG, "Unavailable SKU:" + s);
+                    }
+
+                    final Map<String, Product> products = response.getProductData();
+                    JSONArray jProducts = new JSONArray();
+                    for (final String key : products.keySet())
+                    {
+                        Product product = products.get(key);
+
+                        JSONObject jProduct = new JSONObject();
+                        jProduct.put("title", product.getTitle());
+
+                        jProducts.put(new JSONObject().put(key, jProduct));
+
+
+                        Log.v(TAG, String.format("Product: %s\n Type: %s\n SKU: %s\n Price: %s\n Description: %s\n", product.getTitle(), product.getProductType(), product.getSku(), product.getPrice(), product.getDescription()));
+                    }
+
+                    callbackContext.success(jProducts);
+                    break;
+
+                case FAILED:
+
+                    callbackContext.error(response.toString());
+                    Log.v(TAG, "ProductDataRequestStatus: FAILED");
+                    break;
+            }
+
+        }
+        catch(JSONException e)
+        {
+            callbackContext.error(e.getMessage());
+        }
     }
 
     @Override
