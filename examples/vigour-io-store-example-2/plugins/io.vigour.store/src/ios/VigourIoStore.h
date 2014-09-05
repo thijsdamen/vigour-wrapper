@@ -10,7 +10,7 @@
 
 @class SKPaymentTransaction;
 
-typedef void (^RequestProductsCompletionHandler) (NSError *error, NSArray * products, NSArray * invalidProducts);
+typedef void (^RequestProductsCompletionHandler) (BOOL success, NSArray * products, NSString *commandId);
 
 typedef enum : NSUInteger {
     NoCallback = 0,
