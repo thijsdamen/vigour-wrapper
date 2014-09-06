@@ -189,7 +189,7 @@
                                                                       };
                            }
                            
-                           NSDictionary *validProductsObject = @{@"validProducts":validProducts, @"inValidProducts":invalid};
+                           NSDictionary *validProductsObject = @{@"validProducts":validProducts, @"invalidProducts":invalid};
                            
                            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:validProductsObject];
                            [strongSelf.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
