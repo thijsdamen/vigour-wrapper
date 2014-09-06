@@ -31,7 +31,7 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     private String currentMarketplace = null;
 
     private RequestId requestId;
-
+    private Set<String> skus;
 
     public AmazonHandler(VigourIoStore ioStore) {
         super(ioStore);
@@ -59,7 +59,7 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     {
         this.callbackContext = callbackContext;
 
-        final Set<String> skus = new HashSet<String>();
+        skus = new HashSet<String>();
         for (int i=0; i<data.length(); i++){
             skus.add(data.get(i).toString());
             Log.d(TAG, "Product SKU Added: "+data.get(i).toString());
@@ -81,7 +81,6 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
     void subscribe(JSONArray data, final CallbackContext callbackContext) throws Exception
     {
         this.callbackContext = callbackContext;
-
     }
 
     @Override
@@ -143,10 +142,12 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
                     }
 
                     final Map<String, Product> products = response.getProductData();
+                    JSONObject jResponse = new JSONObject();
                     JSONArray jProducts = new JSONArray();
                     for (final String key : products.keySet())
                     {
                         Product product = products.get(key);
+                        skus.remove(key);
 
                         JSONObject jProduct = new JSONObject();
                         jProduct.put("title", product.getTitle());
@@ -160,8 +161,17 @@ public class AmazonHandler extends StoreHandler implements PurchasingListener
                         Log.v(TAG, String.format("Product: %s\n Type: %s\n SKU: %s\n Price: %s\n Description: %s\n", product.getTitle(), product.getProductType(), product.getSku(), product.getPrice(), product.getDescription()));
                     }
 
+                    jResponse.put("validProducts", jProducts);
+
+                    JSONArray invalidSkus = new JSONArray();
+                    for (String invalidSku: skus) {
+                        invalidSkus.put(invalidSku);
+                    }
+
+                    jResponse.put("invalidProducts", invalidSkus);
+
                     if (requestId.toString().equalsIgnoreCase(response.getRequestId().toString())) {
-                        callbackContext.success(jProducts);
+                        callbackContext.success(jResponse);
                     }
 
                     break;

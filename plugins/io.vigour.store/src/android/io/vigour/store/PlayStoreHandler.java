@@ -29,6 +29,8 @@ public class PlayStoreHandler extends StoreHandler
     // (arbitrary) request code for the purchase flow
     static final int RC_REQUEST = 10001;
 
+    private List<String> skus = new ArrayList<String>();
+
     // The helper object
     IabHelper mHelper;
 
@@ -108,7 +110,6 @@ public class PlayStoreHandler extends StoreHandler
     {
         this.callbackContext = callbackContext;
 
-        final List<String> skus = new ArrayList<String>();
         for (int i=0;i<data.length();i++){
             skus.add(data.get(i).toString());
             Log.d(TAG, "Product SKU Added: "+data.get(i).toString());
@@ -237,7 +238,7 @@ public class PlayStoreHandler extends StoreHandler
                 callbackContext.error("The billing helper has been disposed");
             }
 
-            if (result.isFailure()) {
+            if (result.isFailure() ) {
                 callbackContext.error("Error purchasing: " + result);
                 return;
             }
@@ -300,6 +301,7 @@ public class PlayStoreHandler extends StoreHandler
 
             List<SkuDetails> skuList = inventory.getAllProducts();
 
+            JSONObject jResponse = new JSONObject();
             // Convert the java list to json
             JSONArray jsonSkuList = new JSONArray();
             try {
@@ -307,12 +309,23 @@ public class PlayStoreHandler extends StoreHandler
                     Log.d(TAG, "SKUDetails: Title: "+sku.getTitle());
                     JSONObject jsonSku = new JSONObject();
                     jsonSku.put(sku.getSku(), sku.toJson());
+                    skus.remove(sku.getSku());
                     jsonSkuList.put(jsonSku);
                 }
+
+                jResponse.put("validProducts", jsonSkuList);
+
+                JSONArray invalidSkus = new JSONArray();
+                for (String invalidSku: skus) {
+                    invalidSkus.put(invalidSku);
+                }
+
+                jResponse.put("invalidProducts", invalidSkus);
             } catch (JSONException e) {
                 callbackContext.error(e.getMessage());
             }
-            callbackContext.success(jsonSkuList);
+
+            callbackContext.success(jResponse);
         }
     };
 
