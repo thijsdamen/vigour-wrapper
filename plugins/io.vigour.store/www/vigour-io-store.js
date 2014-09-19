@@ -16,6 +16,7 @@ Store.StoreTypeNames = {
 	, 1: 'PLAY_STORE'
 	, 2: 'MOCK_STORE'
 	, 3: 'AMAZON_STORE'
+	, 4: 'WINDOWS_STORE'
 }
 
 Store.getType = function(cb) {
@@ -48,14 +49,6 @@ Store.restore = function(cb) {
 	})
 }
 
-Store.unsubscribe = function (productId, cb) {
-	exec({
-		fn: 'unsubscribe'
-		, args: [productId]
-		, cb: cb
-	})
-}
-
 function exec (opts) {
 	var needsInit = (opts.needsInit === undefined) ? true : opts.needsInit
 	queue.push(opts)
@@ -66,7 +59,7 @@ function exec (opts) {
 				fn: 'setup'
 				, cb: function (err) {
 					if (err) {
-						err.info = "This action requires store initialization, but store initialization fails, producing this error."
+						err.isStoreInitErr = true
 						initError = err
 					} else {
 						initError = false
@@ -83,7 +76,20 @@ function execute (opts) {
 	var args = (opts.args === undefined) ? [] : opts.args
 	cordova.exec(
 		function (response) {
-			opts.cb(null, response)
+			var returnValue
+				, error
+			try {
+				returnValue = JSON.parse(response)
+			} catch (e) {
+				alert('Error parsing response')
+				error = new Error('Store plugin return value unparsable as JSON')
+			}
+			if (error) {
+				opts.cb(error, response)
+			} else {
+				opts.cb(null, returnValue)
+			}
+			
 			waiting = false
 			next()
 		}
@@ -104,7 +110,6 @@ function next () {
 		nextUp = queue.shift()
 		if (nextUp) {
 			if (initError) {
-				alert('init error')
 				waiting = false
 				nextUp.cb(initError)
 				next()
