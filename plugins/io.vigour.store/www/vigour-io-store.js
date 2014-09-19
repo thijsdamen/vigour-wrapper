@@ -81,11 +81,12 @@ function execute (opts) {
 			try {
 				returnValue = JSON.parse(response)
 			} catch (e) {
-				alert('Error parsing response')
+				// alert('Error parsing response')
 				error = new Error('Store plugin return value unparsable as JSON')
 			}
 			if (error) {
-				opts.cb(error, response)
+				// opts.cb(error, response)
+				opts.cb(null, response)
 			} else {
 				opts.cb(null, returnValue)
 			}
