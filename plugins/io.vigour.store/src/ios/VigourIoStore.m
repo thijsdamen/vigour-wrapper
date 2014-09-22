@@ -335,12 +335,15 @@
     
     self.purchaseInProgress = NO;
     
+    NSString *transactionReceipt = [transaction.transactionReceipt base64EncodedString];
+    
     CDVPluginResult* pluginResult = [
                                      CDVPluginResult
                                      resultWithStatus:CDVCommandStatus_OK
                                      messageAsDictionary:@{
                                                            @"completeTransaction":@{
                                                                    @"transactionIdentifier":NILABLE(transaction.transactionIdentifier),
+                                                                   @"transactionReceipt":NILABLE(transactionReceipt),
                                                                    @"productIdentifier":transaction.payment.productIdentifier
                                                                    }
                                                            }
@@ -359,12 +362,15 @@
     
     self.purchaseInProgress = NO;
     
+    NSString *transactionReceipt = [transaction.transactionReceipt base64EncodedString];
+    
     CDVPluginResult* pluginResult = [
                                      CDVPluginResult
                                      resultWithStatus:CDVCommandStatus_OK
                                      messageAsDictionary:@{
                                                            @"restoreTransaction":@{
                                                                    @"transactionIdentifier":NILABLE(transaction.transactionIdentifier),
+                                                                   @"transactionReceipt":NILABLE(transactionReceipt),
                                                                    @"productIdentifier":transaction.payment.productIdentifier
                                                                    }
                                                            }

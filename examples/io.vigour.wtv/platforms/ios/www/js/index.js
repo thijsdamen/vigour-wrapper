@@ -48,11 +48,11 @@ var app = {
         var fbLoginSuccess = function (userData) {
             alert("UserInfo: " + JSON.stringify(userData));
         }
+
+
+        facebookConnectPlugin.login(["public_profile"], fbLoginSuccess, function (error) { alert("" + error)})
         
-        facebookConnectPlugin.login(["public_info"],
-                                    fbLoginSuccess,
-                                    function (error) { alert("" + error) }
-                                    );
+
 
     }
 };
