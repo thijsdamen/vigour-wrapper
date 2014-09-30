@@ -59,27 +59,27 @@
     switch (type)
     {
         case NoCallback:
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-            break;
-            
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        break;
+        
         case StoreNotInitedCallback:
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:[self storeNotInited]];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            break;
-            
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:[self storeNotInited]];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        break;
+        
         case StoreNoPayments:
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:[self noPaymentPossible]];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            break;
-            
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:[self noPaymentPossible]];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        break;
+        
         case NoProductsSet:
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageAsDictionary:[self noProductsSet]];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            break;
-            
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageAsDictionary:[self noProductsSet]];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        break;
+        
         default:
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-            break;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        break;
     }
     
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -134,7 +134,7 @@
     }
     
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"storeType":[NSNumber numberWithInt:0]}];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)fetch:(CDVInvokedUrlCommand*)command
@@ -146,17 +146,17 @@
         return;
     }
     
-    if(command.arguments.count==0)
-    {
+  if(command.arguments.count==0)
+  {
         [self jsCallback:command callbackType:NoProductsSet];
-        return;
-    }
+    return;
+  }
     
     
     //    [self jsEval:@"fetch" withMessage:nil];
-    
-    if ([SKPaymentQueue canMakePayments])
-    {
+  
+  if ([SKPaymentQueue canMakePayments])
+  {
         
         __typeof(self) __weak weakSelf = self;
         [self requestProductsWithCommand:command
@@ -197,14 +197,14 @@
                            
                        }];
         
-        SKProductsRequest *request = [[SKProductsRequest alloc]
-                                      initWithProductIdentifiers:
-                                      [NSSet setWithArray:command.arguments]];
-        request.delegate = self;
+      SKProductsRequest *request = [[SKProductsRequest alloc]
+                                    initWithProductIdentifiers:
+                                    [NSSet setWithArray:command.arguments]];
+      request.delegate = self;
         
         
-        [request start];
-    }
+      [request start];
+  }
     
 }
 
@@ -223,6 +223,8 @@
         return;
     }
     
+    
+    
     self.purchaseInProgress = YES;
     
     __typeof(self) __weak weakSelf = self;
@@ -232,15 +234,16 @@
                        __strong __typeof(weakSelf) strongSelf = weakSelf;
                        
                        if(error)
-                           return;
+                       return;
                        
                        for (SKProduct *product in products)
                        {
                            
                            SKPayment * payment = [SKPayment paymentWithProduct:product];
-                           [[SKPaymentQueue defaultQueue] addPayment:payment];
                            
                            strongSelf.payments[payment.productIdentifier] = command.callbackId;
+                           
+                           [[SKPaymentQueue defaultQueue] addPayment:payment];
                            
                        }
                    }];
@@ -272,7 +275,7 @@
     {
         
         if(self.requestProductsCompletionHandler)
-            self.requestProductsCompletionHandler(nil, products, response.invalidProductIdentifiers);
+        self.requestProductsCompletionHandler(nil, products, response.invalidProductIdentifiers);
         
     }
     
@@ -285,7 +288,7 @@
     
     
     if(self.requestProductsCompletionHandler)
-        self.requestProductsCompletionHandler(error, nil, nil);
+    self.requestProductsCompletionHandler(error, nil, nil);
     
     self.requestProductsCompletionHandler = nil;
     
@@ -299,7 +302,7 @@
     for (SKPaymentTransaction * transaction in transactions) {
         switch (transaction.transactionState) {
             case SKPaymentTransactionStatePurchasing:
-                break;
+            break;
             case SKPaymentTransactionStatePurchased:
             {
                 [self completeTransaction:transaction];
@@ -316,16 +319,16 @@
                 break;
             }
             default:
-                break;
+            break;
         }
     }
 }
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
+    
     NSLog(@"completeTransaction...");
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-    
     
     self.purchaseInProgress = NO;
     
@@ -343,7 +346,7 @@
                                                            }
                                      ];
     
-    if(self.payments && [self.payments valueForKeyPath:@"transaction.payment.productIdentifier"])
+    if(self.payments && self.payments[transaction.payment.productIdentifier])
     {
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.payments[transaction.payment.productIdentifier]];
         [self.payments removeObjectForKey:transaction.payment.productIdentifier];
@@ -356,7 +359,6 @@
     
     NSLog(@"restoreTransaction...");
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
-    
     
     self.purchaseInProgress = NO;
     
@@ -374,7 +376,7 @@
                                                            }
                                      ];
     
-    if(self.payments && [self.payments valueForKeyPath:@"transaction.payment.productIdentifier"])
+    if(self.payments && self.payments[transaction.payment.productIdentifier])
     {
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.payments[transaction.payment.productIdentifier]];
         [self.payments removeObjectForKey:transaction.payment.productIdentifier];
@@ -383,6 +385,8 @@
 }
 - (void)failedTransaction:(SKPaymentTransaction *)transaction
 {
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
     NSDictionary *error = @{
                             @"description" : @"Transaction failed",
                             @"code": [NSNumber numberWithInteger:transaction.error.code]
@@ -398,15 +402,18 @@
     //SKProduct * product = self.products[transaction.payment.productIdentifier];
     
     self.purchaseInProgress = NO;
-    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
     
     CDVPluginResult* pluginResult = [
                                      CDVPluginResult
                                      resultWithStatus:CDVCommandStatus_ERROR
                                      messageAsDictionary:error
                                      ];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.payments[transaction.payment.productIdentifier]];
-    [self.payments removeObjectForKey:transaction.payment.productIdentifier];
+    if(self.payments && self.payments[transaction.payment.productIdentifier])
+    {
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.payments[transaction.payment.productIdentifier]];
+        [self.payments removeObjectForKey:transaction.payment.productIdentifier];
+    }
     
 }
 
