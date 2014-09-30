@@ -66,6 +66,11 @@ public class PlayStoreHandler extends StoreHandler
         Activity activity = ioStore.cordova.getActivity();
         int resId = activity.getResources().getIdentifier("billing_key", "string", activity.getPackageName());
         String base64EncodedPublicKey = activity.getString(resId);
+        if (base64EncodedPublicKey == null || base64EncodedPublicKey.isEmpty())
+        {
+            callbackContext.error("Failed to read billing_key from strings.xml");
+            return;
+        }
 
         // Create the helper, passing it our context and the public key to verify signatures with
         Log.d(TAG, "Creating IAB helper.");

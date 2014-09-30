@@ -55,7 +55,7 @@
         </config-file>
 
         <config-file target="res/values/strings.xml" parent="/*">
-    	    <string name="billing_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApMx3APYY3VWgs1cBVeYN/pwcFXZO8I4m2ye7deCLXDVVW2gShfyaGPYrJ08qxtybAAcqS8e4RQEOIh8bxksSwzYDctKd1tDElY3ZAZ7OGvk2tqwqADbuYFn0Q7BUYPifZ48cGwT0wiVs/zf8Fqnv2k+6Kc3vzRPrE8DnXPQcd146zBNuipJRYqUR3ri9ImL6kjIrtkMc2BPpDCUIgRYO/OpA3DY3iPZt3nz4rkvCzpdBjtiqcUdFsx0lzvZvTTAs+t5rBVc/X9eo4nj6eS+Z9XDGoxOGfN8nN0VLgjO4K85k8DD+h78NkYZaYwEGfW1mWHZziHCBzsd0qvBhwxwdtQIDAQAB</string>
+    	    <string name="billing_key"/>
         </config-file>
 
         <!-- In-app Billing Library -->
