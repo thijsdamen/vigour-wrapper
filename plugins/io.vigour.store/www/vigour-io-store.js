@@ -19,14 +19,14 @@ Store.StoreTypeNames = {
 	, 4: 'WINDOWS_STORE'
 }
 
-Store.getType = function(cb) {
+Store.getType = function (cb) {
 	exec({
 		fn: 'getType'
 		, cb: cb
 	})
 }
 
-Store.fetch = function(productIds, cb) {
+Store.fetch = function (productIds, cb) {
 	exec({
 		fn: 'fetch'
 		, args: productIds
@@ -34,15 +34,23 @@ Store.fetch = function(productIds, cb) {
 	})
 }
 
-Store.buy = function(productId, userId, cb) {
+Store.buy = function (productId, cb) {
 	exec({
 		fn: 'buy'
-		, args: [productId, userId]
+		, args: [productId]
 		, cb: cb
 	})
 }
 
-Store.restore = function(cb) {
+Store.subscribe = function (productId, cb) {
+	exec({
+		fn: 'subscribe'
+		, args: [productId]
+		, cb: cb
+	})
+} 
+
+Store.restore = function (cb) {
 	exec({
 		fn: 'restore'
 		, cb: cb
