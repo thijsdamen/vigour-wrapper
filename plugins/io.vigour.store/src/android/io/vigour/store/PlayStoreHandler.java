@@ -25,6 +25,7 @@ public class PlayStoreHandler extends StoreHandler
 {
     private static String TAG = PlayStoreHandler.class.getSimpleName();
     private final Boolean ENABLE_DEBUG_LOGGING = true;
+    private String user = "";
 
     // (arbitrary) request code for the purchase flow
     static final int RC_REQUEST = 10001;
@@ -135,11 +136,12 @@ public class PlayStoreHandler extends StoreHandler
         this.callbackContext = callbackContext;
 
         final String sku = data.getString(0);
+        user = data.getString(1);
 
         /* TODO: for security, generate your payload here for verification. See the comments on
          *        verifyDeveloperPayload() for more info. Since this is a sample, we just use
          *        an empty string, but on a production app you should generate this. */
-        final String payload = "";
+        final String payload = generatePayload(sku, user);
 
         if (mHelper == null){
             callbackContext.error("Billing plugin was not initialized");
@@ -158,6 +160,7 @@ public class PlayStoreHandler extends StoreHandler
         this.callbackContext = callbackContext;
 
         final String sku = data.getString(0);
+        user = data.getString(1);
 
         if (mHelper == null){
             callbackContext.error("Billing plugin was not initialized");
@@ -171,7 +174,7 @@ public class PlayStoreHandler extends StoreHandler
 		/* TODO: for security, generate your payload here for verification. See the comments on
          *        verifyDeveloperPayload() for more info. Since this is a sample, we just use
          *        an empty string, but on a production app you should generate this. */
-        final String payload = "";
+        final String payload = generatePayload(sku, user);
 
         ioStore.cordova.setActivityResultCallback(ioStore);
         Log.d(TAG, "Launching purchase flow for subscription.");
@@ -202,10 +205,20 @@ public class PlayStoreHandler extends StoreHandler
         callbackContext.success(skus);
     }
 
+    String generatePayload(String sku, String user)
+    {
+        return sku + "_" + user;
+    }
+
     /** Verifies the developer payload of a purchase. */
     boolean verifyDeveloperPayload(Purchase p) {
-        @SuppressWarnings("unused")
+
         String payload = p.getDeveloperPayload();
+        if (payload == null) {
+            return false;
+        }
+
+        return payload.equalsIgnoreCase(generatePayload(p.getSku(), user));
 
         /*
          * TODO: verify that the developer payload of the purchase is correct. It will be
@@ -230,7 +243,6 @@ public class PlayStoreHandler extends StoreHandler
          * installations is recommended.
          */
 
-        return true;
     }
 
 
