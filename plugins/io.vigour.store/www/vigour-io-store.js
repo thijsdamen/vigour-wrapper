@@ -34,10 +34,10 @@ Store.fetch = function(productIds, cb) {
 	})
 }
 
-Store.buy = function(productId, cb) {
+Store.buy = function(productId, userId, cb) {
 	exec({
 		fn: 'buy'
-		, args: [productId]
+		, args: [productId, userId]
 		, cb: cb
 	})
 }
