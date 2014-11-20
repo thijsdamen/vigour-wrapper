@@ -6,8 +6,6 @@ var SecondScreen = {
     }
 };
 
-// module.exports = SecondScreen;
-
 module.exports = exports = SecondScreen;
 
 SecondScreen.PLUGIN_ID = 'VigourIoSecondScreen';

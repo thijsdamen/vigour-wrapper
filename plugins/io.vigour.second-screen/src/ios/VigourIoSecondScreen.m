@@ -58,12 +58,6 @@
 {
     if ([[UIScreen screens] count] > 1)
     {
-        UIScreen *secondScreen = [[UIScreen screens] objectAtIndex:1];
-        CGRect screenBounds = secondScreen.bounds;
-        
-        self.secondWindow = [[UIWindow alloc] initWithFrame:screenBounds];
-        self.secondWindow.screen = secondScreen;
-        
         [self presentWebView];
     }
 }
@@ -79,30 +73,38 @@
 }
 
 
+#pragma mark - Lazy Properties
+
+-(UIWindow *)secondWindow
+{
+    if(!_secondWindow)
+    {
+        UIScreen *secondScreen = [[UIScreen screens] objectAtIndex:1];
+        CGRect screenBounds = secondScreen.bounds;
+        _secondWindow = [[UIWindow alloc] initWithFrame:screenBounds];
+        _secondWindow.layer.contentsGravity = kCAGravityResizeAspect;
+        _secondWindow.screen = secondScreen;
+    }
+    return _secondWindow;
+}
+
 #pragma mark - Handling screen connection and disconnection notifications
 
 - (void)handleScreenDidConnectNotification:(NSNotification*)aNotification
 {
     UIScreen *newScreen = [aNotification object];
     CGRect screenBounds = newScreen.bounds;
-    
-    if (!self.secondWindow)
-    {
-        self.secondWindow = [[UIWindow alloc] initWithFrame:screenBounds];
-        self.secondWindow.layer.contentsGravity = kCAGravityResizeAspect;
-        self.secondWindow.screen = newScreen;
-        [self presentWebView];
-    }
+    self.secondWindow.frame = screenBounds;
+    self.secondWindow.screen = newScreen;
+    [self presentWebView];
+
 }
 
 - (void)handleScreenDidDisconnectNotification:(NSNotification*)aNotification
 {
-    if (self.secondWindow)
-    {
-        self.secondWindow.hidden = YES;
-        self.secondWindow = nil;
-    }
-    
+    _secondWindow.hidden = YES;
+    _secondWindow = nil;
+    _browser = nil;
 }
 
 #pragma mark - UIWebViewDelegate

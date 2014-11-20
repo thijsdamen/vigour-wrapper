@@ -13,10 +13,10 @@
 
 
 
-@interface VigourIoSecondScreen() 
+@interface VigourIoSecondScreen() <UIWebViewDelegate>
 
 @property (nonatomic, strong) UIWindow *secondWindow;
-@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) UIWebView *browser;
 @property (nonatomic, strong) NSString *urlString;
 
 @end
@@ -105,6 +105,13 @@
     
 }
 
+#pragma mark - UIWebViewDelegate
+
+-(void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    NSLog(@"req loaded");
+}
+
 - (void)presentWebView
 {
     //        if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)]) {
@@ -118,20 +125,18 @@
         return;
     }
     
-    if(!self.webView)
+    if(!self.browser)
     {
-        self.webView = [[UIWebView alloc] initWithFrame:self.secondWindow.screen.bounds];
-        self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        
+        self.browser = [[UIWebView alloc] initWithFrame:self.secondWindow.screen.bounds];
         UIViewController *controller = [UIViewController new];
         self.secondWindow.rootViewController = controller;
-        [controller.view addSubview:self.webView];
-        
+        [controller.view addSubview:self.browser];
+        self.browser.delegate = self;
     }
     
-    NSURL *url = [NSURL URLWithString:self.urlString];
-    NSURLRequest *req = [NSURLRequest requestWithURL:url];
-    [self.webView loadRequest:req];
+    NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+
+    [self.browser loadRequest:theRequest];
     
     self.secondWindow.hidden = NO;
 }
