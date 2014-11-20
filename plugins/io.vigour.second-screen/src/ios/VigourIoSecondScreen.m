@@ -109,9 +109,14 @@
 
 #pragma mark - UIWebViewDelegate
 
--(void)webViewDidFinishLoad:(UIWebView *)webView
+-(void)webViewDidFinishLoad:(UIWebView *)secondWebView
 {
-    NSLog(@"req loaded");
+    
+}
+
+-(void)webView:(UIWebView *)secondWebView didFailLoadWithError:(NSError *)error
+{
+    NSLog(@"%@", [error localizedDescription]);
 }
 
 - (void)presentWebView
