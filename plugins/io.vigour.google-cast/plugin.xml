@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+           id="io.vigour.google-cast"
+      version="0.1.1">
+
+    <name>io.vigour.google-cast</name>
+    <description>Vigour.io Google Cast</description>
+    <license></license>
+    <keywords>vigour.io, Google Cast</keywords>
+    <author>Alexander van der Werff</author>
+
+    <engines>
+        <engine name="cordova-ios" version=">=3.0.0" />
+    </engines>
+		
+    <js-module src="www/vigour-io-google-cast.js" name="VigourIoGoogleCast">
+        <clobbers target="GoogleCast" />
+    </js-module>
+
+
+		<platform name="ios">
+		    <config-file target="config.xml" parent="/*">
+		        <feature name="VigourIoGoogleCast">
+		            <param name="ios-package" value="VigourIoGoogleCast" />
+								<param name="onload" value="true" />
+		        </feature>
+		    </config-file>
+				<header-file src="src/ios/VigourIoGoogleCast.h" />
+				<source-file src="src/ios/VigourIoGoogleCast.m" />
+
+				<framework src="src/frameworks/GoogleCastFramework-2.4.0-Release/GoogleCast.framework" custom="true" />
+				<framework src="SystemConfiguration.framework" />
+				<framework src="MediaAccessibility.framework" />
+				<framework src="CoreText.framework" />
+				<framework src="CFNetwork.framework" />
+				<framework src="Security.framework" />
+				
+		</platform>
+				
+</plugin>
