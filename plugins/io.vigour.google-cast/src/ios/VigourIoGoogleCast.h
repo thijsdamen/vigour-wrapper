@@ -12,5 +12,6 @@
 @interface VigourIoGoogleCast : CDVPlugin {}
 
 
+-(void)startScanForDevices:(CDVInvokedUrlCommand*)command;
 
 @end

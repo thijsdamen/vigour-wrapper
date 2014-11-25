@@ -33,9 +33,15 @@
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
+                
+                <button onclick="GoogleCast.connectToDevice('b57d1a022f21cc0a363ea939c31582f3')">connect to</button>
+                <br>
+                <button onclick="GoogleCast.castMedia('http://www.google.nl', 'test', 'test', '')">cast</button>
+                
             </div>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
+				<script src="../plugins/io.vigour.google-cast/www/vigour-io-google-cast.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>

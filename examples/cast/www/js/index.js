@@ -45,6 +45,18 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+        
+        var applicationID = '5E172148';
+        
+        GoogleCast.startScanForDevices(applicationID, function(data){
+            alert(data);
+        });
+        
+        GoogleCast.dispatchEvent = function (eventType, args) {
+            document.body.innerHTML = eventType;
+        }
+        
+        
     }
 };
 

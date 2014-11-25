@@ -39,13 +39,14 @@
 		7E7966E61810823500FA85AD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DC1810823500FA85AD /* icon-small.png */; };
 		7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DD1810823500FA85AD /* icon-small@2x.png */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
-		B3528BD500254D83854D91CC /* VigourIoGoogleCast.m in Sources */ = {isa = PBXBuildFile; fileRef = E20834D618E742F78B0106B5 /* VigourIoGoogleCast.m */; };
-		C17011B6159F426EAC670E01 /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0712CA34F2B54ED9853F09FA /* GoogleCast.framework */; };
-		5AE003B54DAB4B0EB519DF5D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F8017AD25AE4B80BCB423BA /* SystemConfiguration.framework */; };
-		73B419874A444FCC98FAFEE1 /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F8EC51070C469EA7A3AB72 /* MediaAccessibility.framework */; };
-		9DD58A82D6EF48EEA69D82EB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D042EFB636694261AB011D04 /* CoreText.framework */; };
-		DF4C04FFD6F84A74A21A7A02 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E64727B8E5DD40A5B3CCA479 /* CFNetwork.framework */; };
-		9159A1414D5742BCAEB5767A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44DFED4847343C8B957D4AF /* Security.framework */; };
+		057EEA1BB7EA48C994F194CE /* CDVLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8149ED70C2BE4CCABC31FD6D /* CDVLogger.m */; };
+		3E9C5056F63E49C08A317E1E /* VigourIoGoogleCast.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E7088014CE34989B35CA594 /* VigourIoGoogleCast.m */; };
+		E7EA34E24F4D44DABA1A902E /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 797E673214C0482BBCE4FFF1 /* GoogleCast.framework */; };
+		04CF286A4CE946D5ABC36924 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 314DC5A5E32B4F1EBF1E00F3 /* SystemConfiguration.framework */; };
+		E4ED5D6E527C45C3B8FBBCFD /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB78DA6103A45B986BFAD6A /* MediaAccessibility.framework */; };
+		04FC1C2B4C6F4178B483BED0 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62B8DCD4E1E842EEADB503B8 /* CoreText.framework */; };
+		F72C8BE8A7CF46FA858982B5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D009BD753EED4A8AA6052760 /* CFNetwork.framework */; };
+		08691E761684414F934733BE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FDEAA5F7BA942C6ACF28E7F /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,14 +112,16 @@
 		EB87FDF31871DA8E0020F90C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "GoogleCast/config.xml"; sourceTree = "<group>"; };
-		E20834D618E742F78B0106B5 /* VigourIoGoogleCast.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "VigourIoGoogleCast.m"; path = "io.vigour.google-cast/VigourIoGoogleCast.m"; sourceTree = "<group>"; fileEncoding = 4; };
-		1556183F5B674E00BA98B624 /* VigourIoGoogleCast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "VigourIoGoogleCast.h"; path = "io.vigour.google-cast/VigourIoGoogleCast.h"; sourceTree = "<group>"; fileEncoding = 4; };
-		0712CA34F2B54ED9853F09FA /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "GoogleCast.framework"; path = "GoogleCast/Plugins/io.vigour.google-cast/GoogleCast.framework"; sourceTree = "<group>"; };
-		5F8017AD25AE4B80BCB423BA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		25F8EC51070C469EA7A3AB72 /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "MediaAccessibility.framework"; path = "System/Library/Frameworks/MediaAccessibility.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		D042EFB636694261AB011D04 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CoreText.framework"; path = "System/Library/Frameworks/CoreText.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		E64727B8E5DD40A5B3CCA479 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CFNetwork.framework"; path = "System/Library/Frameworks/CFNetwork.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		E44DFED4847343C8B957D4AF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Security.framework"; path = "System/Library/Frameworks/Security.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		8149ED70C2BE4CCABC31FD6D /* CDVLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVLogger.m"; path = "org.apache.cordova.console/CDVLogger.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		6EE8734DBD474A8FA5C1FAA9 /* CDVLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVLogger.h"; path = "org.apache.cordova.console/CDVLogger.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		4E7088014CE34989B35CA594 /* VigourIoGoogleCast.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "VigourIoGoogleCast.m"; path = "io.vigour.google-cast/VigourIoGoogleCast.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		9291E00EB132417DA6284079 /* VigourIoGoogleCast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "VigourIoGoogleCast.h"; path = "io.vigour.google-cast/VigourIoGoogleCast.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		797E673214C0482BBCE4FFF1 /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "GoogleCast.framework"; path = "GoogleCast/Plugins/io.vigour.google-cast/GoogleCast.framework"; sourceTree = "<group>"; };
+		314DC5A5E32B4F1EBF1E00F3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		7AB78DA6103A45B986BFAD6A /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "MediaAccessibility.framework"; path = "System/Library/Frameworks/MediaAccessibility.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		62B8DCD4E1E842EEADB503B8 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CoreText.framework"; path = "System/Library/Frameworks/CoreText.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		D009BD753EED4A8AA6052760 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CFNetwork.framework"; path = "System/Library/Frameworks/CFNetwork.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		0FDEAA5F7BA942C6ACF28E7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Security.framework"; path = "System/Library/Frameworks/Security.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,12 +133,12 @@
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
-				C17011B6159F426EAC670E01 /* GoogleCast.framework in Frameworks */,
-				5AE003B54DAB4B0EB519DF5D /* SystemConfiguration.framework in Frameworks */,
-				73B419874A444FCC98FAFEE1 /* MediaAccessibility.framework in Frameworks */,
-				9DD58A82D6EF48EEA69D82EB /* CoreText.framework in Frameworks */,
-				DF4C04FFD6F84A74A21A7A02 /* CFNetwork.framework in Frameworks */,
-				9159A1414D5742BCAEB5767A /* Security.framework in Frameworks */,
+				E7EA34E24F4D44DABA1A902E /* GoogleCast.framework in Frameworks */,
+				04CF286A4CE946D5ABC36924 /* SystemConfiguration.framework in Frameworks */,
+				E4ED5D6E527C45C3B8FBBCFD /* MediaAccessibility.framework in Frameworks */,
+				04FC1C2B4C6F4178B483BED0 /* CoreText.framework in Frameworks */,
+				F72C8BE8A7CF46FA858982B5 /* CFNetwork.framework in Frameworks */,
+				08691E761684414F934733BE /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,12 +211,12 @@
 				5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */,
-				0712CA34F2B54ED9853F09FA /* GoogleCast.framework */,
-				5F8017AD25AE4B80BCB423BA /* SystemConfiguration.framework */,
-				25F8EC51070C469EA7A3AB72 /* MediaAccessibility.framework */,
-				D042EFB636694261AB011D04 /* CoreText.framework */,
-				E64727B8E5DD40A5B3CCA479 /* CFNetwork.framework */,
-				E44DFED4847343C8B957D4AF /* Security.framework */,
+				797E673214C0482BBCE4FFF1 /* GoogleCast.framework */,
+				314DC5A5E32B4F1EBF1E00F3 /* SystemConfiguration.framework */,
+				7AB78DA6103A45B986BFAD6A /* MediaAccessibility.framework */,
+				62B8DCD4E1E842EEADB503B8 /* CoreText.framework */,
+				D009BD753EED4A8AA6052760 /* CFNetwork.framework */,
+				0FDEAA5F7BA942C6ACF28E7F /* Security.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -229,8 +232,10 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				E20834D618E742F78B0106B5 /* VigourIoGoogleCast.m */,
-				1556183F5B674E00BA98B624 /* VigourIoGoogleCast.h */,
+				8149ED70C2BE4CCABC31FD6D /* CDVLogger.m */,
+				6EE8734DBD474A8FA5C1FAA9 /* CDVLogger.h */,
+				4E7088014CE34989B35CA594 /* VigourIoGoogleCast.m */,
+				9291E00EB132417DA6284079 /* VigourIoGoogleCast.h */,
 			);
 			name = Plugins;
 			path = "GoogleCast/Plugins";
@@ -415,7 +420,8 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
-				B3528BD500254D83854D91CC /* VigourIoGoogleCast.m in Sources */,
+				057EEA1BB7EA48C994F194CE /* CDVLogger.m in Sources */,
+				3E9C5056F63E49C08A317E1E /* VigourIoGoogleCast.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +467,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"GoogleCast/Plugins/io.vigour.google-cast\"",
+					"\"GoogleCast/Plugins/io.vigour.google-cast\"",
+					"\"GoogleCast/Plugins/io.vigour.google-cast\"",
 				);
 			};
 			name = Debug;
@@ -493,6 +501,8 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"GoogleCast/Plugins/io.vigour.google-cast\"",
+					"\"GoogleCast/Plugins/io.vigour.google-cast\"",
 					"\"GoogleCast/Plugins/io.vigour.google-cast\"",
 				);
 			};

@@ -31,7 +31,9 @@
 
 #pragma mark - API
 
--(void)startScanForDevices:(CDVInvokedUrlCommand*)command {
+
+-(void)startScanForDevices:(CDVInvokedUrlCommand*)command
+{
 
   CDVPluginResult* pluginResult = nil;
   
@@ -61,19 +63,26 @@
 
 #pragma mark - GCKDeviceScannerListener
 
-- (void)deviceDidComeOnline:(GCKDevice *)device {
-  NSLog(@"device found!! %@", device.friendlyName);
+- (void)deviceDidComeOnline:(GCKDevice *)device
+{
+    [self jsEval:@"dispatchEvent" withMessage:@[@"deviceDidComeOnline",
+                                                @{@"friendlyName":device.friendlyName, @"id":device.deviceID, @"modelName":device.modelName}]
+     ];
 }
 
-- (void)deviceDidGoOffline:(GCKDevice *)device {
-
+- (void)deviceDidGoOffline:(GCKDevice *)device
+{
+    [self jsEval:@"dispatchEvent" withMessage:@[@"deviceDidGoOffline",
+                                                @{@"friendlyName":device.friendlyName, @"id":device.deviceID, @"modelName":device.modelName}]
+     ];
 }
 
 #pragma mark - GCKDeviceManagerDelegate
 
-- (void)deviceManagerDidConnect:(GCKDeviceManager *)deviceManager {
-
-  [self.deviceManager launchApplication:self.receiverAppID ];
+- (void)deviceManagerDidConnect:(GCKDeviceManager *)deviceManager
+{
+    [self.deviceManager launchApplication:self.receiverAppID ];
+    [self jsEval:@"dispatchEvent" withMessage:@[@"deviceManagerDidConnect", self.receiverAppID]];
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
@@ -90,16 +99,18 @@
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
-    didFailToConnectToApplicationWithError:(NSError *)error {
-
+    didFailToConnectToApplicationWithError:(NSError *)error
+{
+    
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
-    didFailToConnectWithError:(GCKError *)error {
-
+    didFailToConnectWithError:(GCKError *)error
+{
 }
 
-- (void)deviceManager:(GCKDeviceManager *)deviceManager didDisconnectWithError:(GCKError *)error {
+- (void)deviceManager:(GCKDeviceManager *)deviceManager didDisconnectWithError:(GCKError *)error
+{
   NSLog(@"Received notification that device disconnected");
 
   if (error != nil) {
@@ -109,13 +120,28 @@
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
-    didReceiveStatusForApplication:(GCKApplicationMetadata *)applicationMetadata {
+    didReceiveStatusForApplication:(GCKApplicationMetadata *)applicationMetadata
+{
   self.applicationMetadata = applicationMetadata;
 }
 
 - (void)dealloc
 {
 
+}
+
+- (void)jsEval:(NSString *)callbackName withMessage:(NSArray *)arguments
+{
+    NSString* jsonString = @"";
+    
+    if(arguments)
+    {
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:arguments options:1 error:nil];
+        jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
+    }
+    
+    NSString *js = [NSString stringWithFormat:@"GoogleCast.%@.apply(GoogleCast, %@);", callbackName, jsonString];
+    [self.commandDelegate evalJs:js];
 }
 
 @end
