@@ -54,10 +54,6 @@
 	    </feature>
         </config-file>
 
-        <config-file target="res/values/strings.xml" parent="/*">
-    	    <string name="billing_key"/>
-        </config-file>
-
         <!-- In-app Billing Library -->
 	<source-file src="src/android/com/android/vending/billing/IInAppBillingService.aidl" target-dir="src/com/android/vending/billing" />
 

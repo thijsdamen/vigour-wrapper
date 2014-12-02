@@ -271,16 +271,11 @@
 {
     NSArray *products = response.products;
     
-    if (products.count != 0)
-    {
-        
-        if(self.requestProductsCompletionHandler)
-        self.requestProductsCompletionHandler(nil, products, response.invalidProductIdentifiers);
-        
-    }
+    if(self.requestProductsCompletionHandler)
+    	self.requestProductsCompletionHandler(nil, products, response.invalidProductIdentifiers);    
     
     self.requestProductsCompletionHandler = nil;
-    
+
 }
 
 -(void)request:(SKRequest *)request didFailWithError:(NSError *)error

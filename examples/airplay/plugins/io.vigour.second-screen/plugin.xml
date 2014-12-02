@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+           id="io.vigour.second-screen"
+      version="0.1.1">
+
+    <name>io.vigour.second-screen</name>
+    <description>Vigour.io Second Screen</description>
+    <license></license>
+    <keywords>vigour.io,airplay,second screen</keywords>
+    <author>Alexander van der Werff</author>
+
+    <engines>
+        <engine name="cordova-ios" version=">=3.0.0" />
+    </engines>
+		
+    <js-module src="www/vigour-io-second-screen.js" name="VigourIoSecondScreen">
+        <clobbers target="SecondScreen" />
+    </js-module>
+
+
+		<platform name="ios">
+		    <config-file target="config.xml" parent="/*">
+		        <feature name="VigourIoSecondScreen">
+		            <param name="ios-package" value="VigourIoSecondScreen" />
+								<param name="onload" value="true" />
+		        </feature>
+		    </config-file>
+				<header-file src="src/ios/VigourIoSecondScreen.h" />
+				<source-file src="src/ios/VigourIoSecondScreen.m" />
+				<framework src="QuartzCore.framework" />
+		</platform>
+				
+</plugin>

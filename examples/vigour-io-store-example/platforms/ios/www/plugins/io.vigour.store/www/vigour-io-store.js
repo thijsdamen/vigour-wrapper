@@ -27,7 +27,7 @@ Store.fetch = function (productIds, callback) {
 };
                
 Store.buy = function (productId, callback) {
-    var productIds = [];
+    var productIds = [];					
     if (!(productId instanceof Array)) {
         productIds.push(productId);
     }
