@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+           id="io.vigour.store"
+      version="0.1.1">
+
+    <name>Vigour-io-store</name>
+    <description>Vigour.io Store Plugin</description>
+    <license></license>
+    <keywords>vigour.io,store,purchases</keywords>
+    <author>Alexander van der Werff</author>
+
+    <engines>
+        <engine name="cordova-ios" version=">=3.0.0" />
+    </engines>
+		
+    <js-module src="www/vigour-io-store.js" name="VigourIoStore">
+        <clobbers target="Store" />
+    </js-module>
+
+    <platform name="ios">
+
+        <config-file target="config.xml" parent="/*">
+			    <feature name="VigourIoStore">
+				    <param name="ios-package" value="VigourIoStore" />
+						<param name="onload" value="true" />
+			    </feature>
+        </config-file>
+
+				<header-file src="src/ios/VigourIoStore.h" />
+				<source-file src="src/ios/VigourIoStore.m" />
+				
+				<framework src="StoreKit.framework" />
+	       
+    </platform>
+
+    <platform name="android">
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+          <uses-permission android:name="com.android.vending.BILLING" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <receiver android:name = "com.amazon.device.iap.ResponseReceiver" >
+              <intent-filter>
+                <action android:name = "com.amazon.inapp.purchasing.NOTIFY"
+                    android:permission = "com.amazon.inapp.purchasing.Permission.NOTIFY" />
+              </intent-filter>
+            </receiver>
+        </config-file>
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="VigourIoStore">   
+        	  <param name="android-package" value="io.vigour.store.VigourIoStore"/>
+            </feature>
+        </config-file>
+
+        <config-file target="res/values/strings.xml" parent="/*">
+            <string name="billing_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApMx3APYY3VWgs1cBVeYN/pwcFXZO8I4m2ye7deCLXDVVW2gShfyaGPYrJ08qxtybAAcqS8e4RQEOIh8bxksSwzYDctKd1tDElY3ZAZ7OGvk2tqwqADbuYFn0Q7BUYPifZ48cGwT0wiVs/zf8Fqnv2k+6Kc3vzRPrE8DnXPQcd146zBNuipJRYqUR3ri9ImL6kjIrtkMc2BPpDCUIgRYO/OpA3DY3iPZt3nz4rkvCzpdBjtiqcUdFsx0lzvZvTTAs+t5rBVc/X9eo4nj6eS+Z9XDGoxOGfN8nN0VLgjO4K85k8DD+h78NkYZaYwEGfW1mWHZziHCBzsd0qvBhwxwdtQIDAQAB</string>
+        </config-file>
+
+        <!-- In-app Billing Library -->
+        <source-file src="src/android/com/android/vending/billing/IInAppBillingService.aidl" target-dir="src/com/android/vending/billing" />
+
+        <source-file src="src/android/io/vigour/store/VigourIoStore.java" target-dir="src/io/vigour/store" />
+        <source-file src="src/android/io/vigour/store/StoreHandler.java" target-dir="src/io/vigour/store" />
+        <source-file src="src/android/io/vigour/store/AmazonHandler.java" target-dir="src/io/vigour/store" />
+        <source-file src="src/android/io/vigour/store/PlayStoreHandler.java" target-dir="src/io/vigour/store" />
+
+        <source-file src="src/android/io/vigour/store/util/Base64.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/Base64DecoderException.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/IabException.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/IabHelper.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/IabResult.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/Inventory.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/Purchase.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/Security.java" target-dir="src/io/vigour/store/util" />
+        <source-file src="src/android/io/vigour/store/util/SkuDetails.java" target-dir="src/io/vigour/store/util" />
+
+        <source-file src="src/android/libs/in-app-purchasing-2.0.0.jar" target-dir="libs" framework="true" />
+
+    </platform>
+
+    <platform name="wp8">
+        <config-file target="config.xml" parent="/*">
+            <feature name="VigourIoStore">
+                <param name="wp-package" value="VigourIoStore"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/wp/VigourIoStore.cs" />
+    </platform>
+
+</plugin>
