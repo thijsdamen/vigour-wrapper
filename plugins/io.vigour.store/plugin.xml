@@ -76,4 +76,14 @@
 
     </platform>
 
+    <platform name="wp8">
+        <config-file target="config.xml" parent="/*">
+            <feature name="VigourIoStore">
+                <param name="wp-package" value="VigourIoStore"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/wp/VigourIoStore.cs" />
+    </platform>
+
 </plugin>
