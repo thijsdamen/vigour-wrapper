@@ -1,5 +1,12 @@
 using System;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
+#if DEBUG
+    using MockIAPLib;
+    using Store = MockIAPLib;
+#else
+    using Windows.ApplicationModel.Store;
+#endif
 
 namespace WPCordovaClassLib.Cordova.Commands
 {
@@ -65,13 +72,14 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
-        public void fetch(string options)
+        public async Task fetch(string options)
         {
             try
             {
+                ListingInformation li = await CurrentApp.LoadListingInformationAsync();
                 //var locale = CultureInfo.CurrentCulture.Name;
 
-                string locale = "fetch result";
+                string locale = li.FormattedPrice;
 
                 PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(locale));
                 this.DispatchCommandResult(result);
