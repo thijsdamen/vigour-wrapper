@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/vigour-io/vigour-wrapper/issues"
   },
-  "homepage": "https://github.com/vigour-io/wrapper"
+  "homepage": "https://github.com/vigour-io/wrapper",
+  "devDependencies": {
+    "promise": "^6.1.0"
+  }
 }
