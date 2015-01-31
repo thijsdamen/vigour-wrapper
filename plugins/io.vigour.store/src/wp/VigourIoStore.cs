@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 #if DEBUG
     using MockIAPLib;
     using Store = MockIAPLib;
@@ -78,10 +79,17 @@ namespace WPCordovaClassLib.Cordova.Commands
             {
                 ListingInformation li = await CurrentApp.LoadListingInformationAsync();
                 //var locale = CultureInfo.CurrentCulture.Name;
+                string[] opts = JSON.JsonHelper.Deserialize<string[]>(options);
+                List<ProductListing> products = new List<ProductListing>(opts.Length);
+                for (var i = 0; i < opts.Length; i += 1)
+                {
+                    if (li.ProductListings.ContainsKey(opts[i]))
+                    {
+                        products.Add(li.ProductListings[opts[i]]);
+                    }
+                }
 
-                string locale = li.FormattedPrice;
-
-                PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(locale));
+                PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(products));
                 this.DispatchCommandResult(result);
             }
             catch (Exception)
@@ -124,6 +132,8 @@ namespace WPCordovaClassLib.Cordova.Commands
             }
         }
 
+        
+
         private string WrapIntoJSON<T>(T data, string keyName = "value")
         {
             string param = "{0}";
@@ -150,5 +160,34 @@ namespace WPCordovaClassLib.Cordova.Commands
             return formattedData;
         }
 
+        private string WrapIntoJSON(List<ProductListing> data, string keyName = "validProducts")
+        {
+
+            string param = "{0}";
+            string stringifiedData = "[";
+            foreach (ProductListing p in data)
+            {
+                stringifiedData += "{";
+                stringifiedData += "\"id\":\"" + p.ProductId + "\"";
+                stringifiedData += ",\"name\":\"" + p.Name + "\"";
+                stringifiedData += ",\"type\":\"" + p.ProductType + "\"";
+                stringifiedData += ",\"tag\":\"" + p.Tag + "\"";
+                stringifiedData += ",\"imageUri\":\"" + p.ImageUri + "\"";
+                stringifiedData += ",\"keywords\":\"" + p.Keywords + "\"";
+                stringifiedData += ",\"formattedPrice\":\"" + p.FormattedPrice + "\"";
+                stringifiedData += ",\"description\":\"" + p.Description + "\"";
+                stringifiedData += "},";
+            }
+            if (stringifiedData.Length > 1) {
+                stringifiedData = stringifiedData.Substring(0, stringifiedData.Length - 1);
+            }
+            stringifiedData += "]";
+            var formattedData = string.Format("\"" + keyName + "\":" + param, stringifiedData);
+            formattedData = "{" + formattedData + "}";
+
+            return formattedData;
+        }
+
     }
+
 }
