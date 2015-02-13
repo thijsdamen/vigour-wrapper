@@ -4,33 +4,33 @@ var Promise = require('promise')
 	, annualy = "mtvplay_subscription_annual"
 	, single = "mtvplay_single_episode"
 
-document.addEventListener("deviceready", start, false)
-
+//document.addEventListener("deviceready", start, false)
+document.getElementById('thebutton').addEventListener("click", start)
 function start () {
 	handle("gettype", window.Store.getType)
-		.then(function () {
-			return handle("fetch"
-				, window.Store.fetch
-				, [monthly, annualy, single])
-		})
+		//.then(function () {
+		//	return handle("fetch"
+		//		, window.Store.fetch
+		//		, [monthly, annualy, single])
+		//})
 		.then(function () {
 			return handle("buysingle"
 				, window.Store.buy
 				, single)
 		})
-		.then(function () {
-			return handle("buymonthly"
-				, window.Store.buy
-				, monthly)
-		})
-		.then(function () {
-			return handle("buyannualy"
-				, window.Store.buy
-				, annualy)
-		})
+		//.then(function () {
+		//	return handle("buymonthly"
+		//		, window.Store.buy
+		//		, monthly)
+		//})
+		//.then(function () {
+		//	return handle("buyannualy"
+		//		, window.Store.buy
+		//		, annualy)
+		//})
 		.catch(function (reason) {
-			alert("unhandled error")
-			alert(reason)
+			alerty("unhandled error")
+			alerty(reason)
 		})
 }
 
@@ -41,21 +41,32 @@ function handle (tag, fn) {
 	return new Promise(function (resolve, reject) {
 		var cb = function (err, results) {
 			if (err) {
-				alert("err:")
-				alert(err)
+				alerty("err:")
+				try {
+					alerty(JSON.stringify(err))
+				} catch (e) {
+					alerty("JSON.stringify(err) throws")
+					alerty(e)
+				}
 				reject(err)
 			}
 			try {
-				alert(tag + " results: " + JSON.stringify(results))
+				alerty(tag + " results: " + JSON.stringify(results))
 				resolve(JSON.stringify(results))
 			} catch (e) {
-				alert("JSON.stringify(results) throws")
-				alert(e)
+				alerty("JSON.stringify(results) throws")
+				alerty(e)
 				reject(e)
 			}
 		}
-		alert(tag + "(" + extras + ")")
+		alerty(tag + "(" + extras + ")")
 		extras.push(cb)
 		fn.apply(this, extras)
 	})
+}
+
+function alerty(msg) {
+	document.getElementsByTagName('body')[0].appendChild(document.createTextNode(msg))
+	document.getElementsByTagName('body')[0].appendChild(document.createElement('br'))
+	document.getElementsByTagName('body')[0].appendChild(document.createElement('br'))
 }
