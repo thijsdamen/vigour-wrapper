@@ -8,29 +8,33 @@ var Promise = require('promise')
 document.getElementById('thebutton').addEventListener("click", start)
 function start () {
 	handle("gettype", window.Store.getType)
-		//.then(function () {
-		//	return handle("fetch"
-		//		, window.Store.fetch
-		//		, [monthly, annualy, single])
-		//})
+		.then(function () {
+			return handle("fetch"
+				, window.Store.fetch
+				, [monthly, annualy, single])
+		})
 		.then(function () {
 			return handle("buysingle"
 				, window.Store.buy
 				, single)
 		})
-		//.then(function () {
-		//	return handle("buymonthly"
-		//		, window.Store.buy
-		//		, monthly)
-		//})
-		//.then(function () {
-		//	return handle("buyannualy"
-		//		, window.Store.buy
-		//		, annualy)
-		//})
+		.then(function () {
+			return handle("buymonthly"
+				, window.Store.buy
+				, monthly)
+		})
+		// .then(function () {
+		// 	return handle("buyannualy"
+		// 		, window.Store.buy
+		// 		, annualy)
+		// })
 		.catch(function (reason) {
-			alerty("unhandled error")
-			alerty(reason)
+			msg("unhandled error")
+			try {
+				msg(reason)
+			} catch (e) {
+				msg(e)
+			}
 		})
 }
 
@@ -41,32 +45,32 @@ function handle (tag, fn) {
 	return new Promise(function (resolve, reject) {
 		var cb = function (err, results) {
 			if (err) {
-				alerty("err:")
+				msg("err:")
 				try {
-					alerty(JSON.stringify(err))
+					msg(JSON.stringify(err))
 				} catch (e) {
-					alerty("JSON.stringify(err) throws")
-					alerty(e)
+					msg("JSON.stringify(err) throws")
+					msg(e)
 				}
 				reject(err)
 			}
 			try {
-				alerty(tag + " results: " + JSON.stringify(results))
+				msg(tag + " results: " + JSON.stringify(results))
 				resolve(JSON.stringify(results))
 			} catch (e) {
-				alerty("JSON.stringify(results) throws")
-				alerty(e)
+				msg("JSON.stringify(results) throws")
+				msg(e)
 				reject(e)
 			}
 		}
-		alerty(tag + "(" + extras + ")")
+		msg(tag + "(" + extras + ")")
 		extras.push(cb)
 		fn.apply(this, extras)
 	})
 }
 
-function alerty(msg) {
-	document.getElementsByTagName('body')[0].appendChild(document.createTextNode(msg))
+function msg(txt) {
+	document.getElementsByTagName('body')[0].appendChild(document.createTextNode(txt))
 	document.getElementsByTagName('body')[0].appendChild(document.createElement('br'))
 	document.getElementsByTagName('body')[0].appendChild(document.createElement('br'))
 }
