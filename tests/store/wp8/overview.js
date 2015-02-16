@@ -6,23 +6,33 @@ var Promise = require('promise')
 
 //document.addEventListener("deviceready", start, false)
 document.getElementById('thebutton').addEventListener("click", start)
-function start () {
+function start() {
 	handle("gettype", window.Store.getType)
 		//.then(function () {
 		//	return handle("fetch"
 		//		, window.Store.fetch
 		//		, [monthly, annualy, single])
 		//})
+		.catch(function (reason) {
+			return true
+		})
 		.then(function () {
 			return handle("buysingle"
 				, window.Store.buy
 				, single)
 		})
-		//.then(function () {
-		//	return handle("buymonthly"
-		//		, window.Store.buy
-		//		, monthly)
-		//})
+		.catch(function (reason) {
+			return true
+		})
+		.then(function () {
+			return handle("buymonthly"
+				, window.Store.buy
+				, monthly)
+		})
+		.catch(function (reason) {
+			return true
+			s
+		})
 		//.then(function () {
 		//	return handle("buyannualy"
 		//		, window.Store.buy
@@ -34,7 +44,7 @@ function start () {
 		})
 }
 
-function handle (tag, fn) {
+function handle(tag, fn) {
 	var args = [].slice.call(arguments)
 		, extras = args.slice(2)
 
@@ -49,14 +59,15 @@ function handle (tag, fn) {
 					alerty(e)
 				}
 				reject(err)
-			}
-			try {
-				alerty(tag + " results: " + JSON.stringify(results))
-				resolve(JSON.stringify(results))
-			} catch (e) {
-				alerty("JSON.stringify(results) throws")
-				alerty(e)
-				reject(e)
+			} else {
+				try {
+					alerty(tag + " results: " + JSON.stringify(results))
+					resolve(JSON.stringify(results))
+				} catch (e) {
+					alerty("JSON.stringify(results) throws")
+					alerty(e)
+					reject(e)
+				}
 			}
 		}
 		alerty(tag + "(" + extras + ")")

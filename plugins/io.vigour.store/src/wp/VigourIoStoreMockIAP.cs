@@ -2,8 +2,15 @@ using System;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+#if DEBUG
+using MockIAPLib;
+using Store = MockIAPLib;
+using System.Windows.Threading;
+using System.Windows;
+#else
 using Windows.ApplicationModel.Store;
 using System.Windows;
+#endif
 
 namespace WPCordovaClassLib.Cordova.Commands
 {
@@ -105,7 +112,16 @@ namespace WPCordovaClassLib.Cordova.Commands
 				Deployment.Current.Dispatcher.BeginInvoke(async delegate
 				{
 					PluginResult result;
+#if DEBUG
+					var receipt = await CurrentApp.RequestProductPurchaseAsync(productID, true);
+					if (CurrentApp.LicenseInformation.ProductLicenses[productID].IsConsumable)
+						CurrentApp.ReportProductFulfillment(productID);
 
+					result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(receipt));
+
+					// How to get expiration date from an in-app product.
+					//var expDate = CurrentApp.LicenseInformation.ProductLicenses[productID].ExpirationDate;
+#else
 					//Purchase the product
 					var purchaseResults = await CurrentApp.RequestProductPurchaseAsync(productID);
 
@@ -130,10 +146,7 @@ namespace WPCordovaClassLib.Cordova.Commands
 							result = new PluginResult(PluginResult.Status.ERROR, this.WrapIntoJSON("Unhandled Purchasing Error"));
 							break;
 					}
-
-					// How to get expiration date from an in-app product.
-					//var expDate = CurrentApp.LicenseInformation.ProductLicenses[productID].ExpirationDate;
-
+#endif
 					this.DispatchCommandResult(result);
 				});
 			}
