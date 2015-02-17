@@ -6,28 +6,37 @@ var Promise = require('promise')
 
 //document.addEventListener("deviceready", start, false)
 document.getElementById('thebutton').addEventListener("click", start)
-function start () {
+function start() {
 	handle("gettype", window.Store.getType)
 		.then(function () {
 			return handle("fetch"
 				, window.Store.fetch
 				, [monthly, annualy, single])
 		})
+		.catch(function (reason) {
+			return true
+		})
 		.then(function () {
 			return handle("buysingle"
 				, window.Store.buy
 				, single)
 		})
-		.then(function () {
-			return handle("buymonthly"
-				, window.Store.buy
-				, monthly)
+		.catch(function (reason) {
+			return true
 		})
 		// .then(function () {
-		// 	return handle("buyannualy"
+		// 	return handle("buymonthly"
 		// 		, window.Store.buy
-		// 		, annualy)
+		// 		, monthly)
 		// })
+		// .catch(function (reason) {
+		// 	return true
+		// })
+		.then(function () {
+			return handle("buyannualy"
+				, window.Store.buy
+				, annualy)
+		})
 		.catch(function (reason) {
 			msg("unhandled error")
 			try {
@@ -38,7 +47,7 @@ function start () {
 		})
 }
 
-function handle (tag, fn) {
+function handle(tag, fn) {
 	var args = [].slice.call(arguments)
 		, extras = args.slice(2)
 
@@ -53,14 +62,15 @@ function handle (tag, fn) {
 					msg(e)
 				}
 				reject(err)
-			}
-			try {
-				msg(tag + " results: " + JSON.stringify(results))
-				resolve(JSON.stringify(results))
-			} catch (e) {
-				msg("JSON.stringify(results) throws")
-				msg(e)
-				reject(e)
+			} else {
+				try {
+					msg(tag + " results: " + JSON.stringify(results))
+					resolve(JSON.stringify(results))
+				} catch (e) {
+					msg("JSON.stringify(results) throws")
+					msg(e)
+					reject(e)
+				}
 			}
 		}
 		msg(tag + "(" + extras + ")")
