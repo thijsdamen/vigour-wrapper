@@ -40,7 +40,7 @@ function start() {
 		.catch(function (reason) {
 			msg("unhandled error")
 			try {
-				msg(reason)
+				msg(JSON.stringify(reason, null, 2))
 			} catch (e) {
 				msg(e)
 			}
