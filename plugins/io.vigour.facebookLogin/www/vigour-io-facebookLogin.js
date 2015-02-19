@@ -1,17 +1,17 @@
-cordova.define("io.vigour.facebookLogin.VigourIoFacebookLogin", function(require, exports, module) { "use strict";
+"use strict";
 
-    var FB = {}
-	    , queue = []
-	    , waiting = false
+var FB = {}
+    , queue = []
+    , waiting = false
 
 module.exports = exports = FB
 
 FB.PLUGIN_ID = 'VigourIoFacebookLogin'
 
-FB.init = function (cb) {
+FB.init = function (options, cb) {
     exec({
         fn: 'init'
-        , args: []
+        , args: [options]
         , cb: cb
     })
 }
@@ -73,4 +73,3 @@ function next() {
         }
     }
 }
-});

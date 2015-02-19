@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WPCordovaClassLib.Cordova.Commands
 {
@@ -36,11 +37,11 @@ namespace WPCordovaClassLib.Cordova.Commands
 			}
 		}
 
-		public async Task init(string scope)
+		public async Task init(string options)
 		{
 		    try
 		    {
-		        PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(scope));
+		        PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(options));
 		        this.DispatchCommandResult(result);
 		    }
 		    catch (Exception)

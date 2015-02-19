@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
            id="io.vigour.facebookLogin"
-      version="0.0.1">
+      version="0.1.1">
 
     <name>Vigour-io-facebookLogin</name>
     <description>Vigour.io Facebook Login Plugin</description>
@@ -20,7 +20,7 @@
             </feature>
         </config-file>
 
-        <source-file src="src/wp/Vigour-io-facebookLogin.cs" />
+        <source-file src="src/wp/VigourIoFacebookLogin.cs" />
     </platform>
 
 </plugin>
