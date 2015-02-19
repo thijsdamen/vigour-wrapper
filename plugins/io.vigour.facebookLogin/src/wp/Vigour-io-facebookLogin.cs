@@ -36,18 +36,18 @@ namespace WPCordovaClassLib.Cordova.Commands
 			}
 		}
 
-        public async Task init(string scope)
-        {
-            try
-            {
-                PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(scope));
-                this.DispatchCommandResult(result);
-            }
-            catch (Exception)
-            {
-                this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new VigourIoFacebookLoginError()));
-            }
-        }
+		public async Task init(string scope)
+		{
+		    try
+		    {
+		        PluginResult result = new PluginResult(PluginResult.Status.OK, this.WrapIntoJSON(scope));
+		        this.DispatchCommandResult(result);
+		    }
+		    catch (Exception)
+		    {
+		        this.DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, new VigourIoFacebookLoginError()));
+		    }
+		}
 
 		public async Task login(string scope)
 		{
