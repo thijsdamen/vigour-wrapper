@@ -1,10 +1,20 @@
-"use strict";
+cordova.define("io.vigour.facebookLogin.VigourIoFacebookLogin", function(require, exports, module) { "use strict";
 
-var FB = {}
+    var FB = {}
+	    , queue = []
+	    , waiting = false
 
 module.exports = exports = FB
 
 FB.PLUGIN_ID = 'VigourIoFacebookLogin'
+
+FB.init = function (cb) {
+    exec({
+        fn: 'init'
+        , args: []
+        , cb: cb
+    })
+}
 
 FB.login = function (cb, options) {
 	exec({
@@ -51,35 +61,16 @@ function execute (opts) {
 		, args)
 }
 
-function next () {
-	var nextUp
-	if (!waiting) {
-		waiting = true
-		nextUp = queue.shift()
-		if (nextUp) {
-			execute(nextUp)
-		} else {
-			waiting = false
-		}
-	}
+function next() {
+    var nextUp
+    if (!waiting) {
+        waiting = true
+        nextUp = queue.shift()
+        if (nextUp) {
+            execute(nextUp)
+        } else {
+            waiting = false
+        }
+    }
 }
-
-// The following will be removed as soon as another solution is implemented natively
-Store.updatedTransactionCallback = function(state, transactionIdentifier, productId, error) {
-	switch (state) {
-		case 'PaymentTransactionStatePurchased':
-			alert("purchased: " + transactionIdentifier + " " + productId)
-			break
-		case 'PaymentTransactionStateFailed':
-			alert(error.description + " " + error.code)
-			break
-		case 'PaymentTransactionStateRestored':
-			alert("restored " + transactionIdentifier + " " + productId)
-			break
-		case 'PaymentTransactionStateFinished':
-			alert("finished " + transactionIdentifier + " " + productId)
-			break
-		default:
-			alert("unhandled updatedTransactionCallback state: " + state)
-	}
-}
+});
